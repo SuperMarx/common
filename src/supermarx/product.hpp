@@ -2,9 +2,13 @@
 
 #include <string>
 
-namespace supermarx {
-	struct  Product {
-		std::string name;
-		unsigned int price_in_cents;
-	};
+namespace supermarx
+{
+
+struct product
+{
+	std::string name;
+	unsigned int price_in_cents;
+};
+
 }
