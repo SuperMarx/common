@@ -73,8 +73,8 @@ std::string convert_msgpack_type(const msgpack::type::object_type t)
 		return "ARRAY";
 	case msgpack::type::BOOLEAN:
 		return "BOOLEAN";
-	case msgpack::type::DOUBLE:
-		return "DOUBLE";
+	case msgpack::type::FLOAT:
+		return "FLOAT";
 	case msgpack::type::MAP:
 		return "MAP";
 	case msgpack::type::NEGATIVE_INTEGER:
@@ -83,8 +83,12 @@ std::string convert_msgpack_type(const msgpack::type::object_type t)
 		return "NIL";
 	case msgpack::type::POSITIVE_INTEGER:
 		return "POSITIVE_INTEGER";
-	case msgpack::type::RAW:
-		return "RAW";
+	case msgpack::type::STR:
+		return "STR";
+	case msgpack::type::BIN:
+		return "BIN";
+	case msgpack::type::EXT:
+		return "EXT";
 	default:
 		return "UNKNOWN";
 	}
@@ -96,10 +100,10 @@ void msgpack_deserializer::read_key(const std::string& key)
 		return; //Do not check if we're not in a map
 
 	const msgpack::object& obj = read();
-	if(obj.type != msgpack::type::RAW)
-		throw type_error(convert_msgpack_type(msgpack::type::RAW), convert_msgpack_type(obj.type));
+	if(obj.type != msgpack::type::STR)
+		throw type_error(convert_msgpack_type(msgpack::type::STR), convert_msgpack_type(obj.type));
 
-	const std::string received(obj.via.raw.ptr, obj.via.raw.size);
+	const std::string received(obj.via.str.ptr, obj.via.str.size);
 	if(key != received)
 		throw key_error(key, received);
 }
@@ -148,10 +152,10 @@ void msgpack_deserializer::read(const std::string& key, std::string& x)
 	read_key(key);
 
 	const msgpack::object& obj = read();
-	if(obj.type != msgpack::type::RAW)
-		throw type_error(convert_msgpack_type(msgpack::type::RAW), convert_msgpack_type(obj.type));
+	if(obj.type != msgpack::type::STR)
+		throw type_error(convert_msgpack_type(msgpack::type::STR), convert_msgpack_type(obj.type));
 
-	x = std::string(obj.via.raw.ptr, obj.via.raw.size);
+	x = std::string(obj.via.str.ptr, obj.via.str.size);
 }
 
 }

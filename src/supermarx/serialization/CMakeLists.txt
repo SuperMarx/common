@@ -2,7 +2,8 @@
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/contrib/wubwubcmake/modules")
 
-find_package(msgpack REQUIRED)
+# We now use msgpack-c 1.01 in contrib
+# find_package(msgpack REQUIRED)
 find_package(tinyxml2 REQUIRED)
 find_package(jsoncpp REQUIRED)
 
@@ -16,8 +17,7 @@ add_library(supermarx-serialization-msgpack
 			msgpack_deserializer.cpp)
 
 target_link_libraries(supermarx-serialization-msgpack supermarx-serialization ${msgpack_LIBRARIES})
-
-list(APPEND SuperMarx_INCLUDE_DIRS ${msgpack_INCLUDE_DIRS})	
+list(APPEND SuperMarx_INCLUDE_DIRS ${msgpack_INCLUDE_DIRS})
 
 add_library(supermarx-serialization-xml
 			xml_serializer.cpp)

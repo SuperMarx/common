@@ -13,8 +13,8 @@ msgpack_compact_serializer::~msgpack_compact_serializer()
 
 void msgpack_compact_serializer::write(const std::string& x)
 {
-	pk.pack_raw(x.size());
-	pk.pack_raw_body(x.data(), x.size());
+	pk.pack_str(x.size());
+	pk.pack_str_body(x.data(), x.size());
 }
 
 void msgpack_compact_serializer::write_array(const std::string& /*name*/, const size_t n)

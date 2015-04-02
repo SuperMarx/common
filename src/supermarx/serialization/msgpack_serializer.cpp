@@ -20,8 +20,8 @@ msgpack_serializer::stack_e::stack_e(type_t _t, size_t _n)
 
 void msgpack_serializer::write(const std::string& x)
 {
-	pk.pack_raw(x.size());
-	pk.pack_raw_body(x.data(), x.size());
+	pk.pack_str(x.size());
+	pk.pack_str_body(x.data(), x.size());
 }
 
 void msgpack_serializer::add_node(const type_t t, const std::string& name, const size_t n)
