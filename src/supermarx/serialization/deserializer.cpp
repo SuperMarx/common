@@ -48,11 +48,11 @@ void deserializer::read(const std::string& key, datetime& x)
 	std::string str;
 	read(key, str);
 
-	const static boost::regex regex("([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9]{2}:[0-9]{2})Z");
+	const static boost::regex regex("([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9]{2}:[0-9]{2})");
 
 	boost::smatch match;
 	if(!boost::regex_match(str, match, regex))
-		throw type_error("a string in the format 'YYYY-MM-DD HH:MM:SSZ'", str);
+		throw type_error("a string in the format 'YYYY-MM-DD HH:MM:SS'", str);
 
 	x = datetime(to_date(match[1]), to_time(match[2]));
 }

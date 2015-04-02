@@ -6,6 +6,8 @@
 
 #include <supermarx/serialization/serializer.hpp>
 
+#include <boost/optional.hpp>
+
 namespace supermarx
 {
 namespace detail
