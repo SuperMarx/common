@@ -2,6 +2,7 @@
 
 #include <boost/date_time/posix_time/ptime.hpp>
 #include <boost/date_time/time_clock.hpp>
+#include <boost/date_time/gregorian/formatters.hpp>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -17,15 +18,25 @@ namespace supermarx
 		return boost::date_time::second_clock<datetime>().local_time();
 	}
 
+	inline std::string to_string(const long x, const uint length)
+	{
+		std::string x_str = boost::lexical_cast<std::string>(x);
+
+		if(x_str.size() >= length)
+			return x_str;
+
+		return std::string(length - x_str.size(), '0').append(x_str);
+	}
+
 	inline std::ostream& operator<<(std::ostream& os, date const& rhs)
 	{
-		os << rhs.year() << '-' << rhs.month() << '-' << rhs.day();
+		os << boost::gregorian::to_iso_extended_string(rhs);
 		return os;
 	}
 
 	inline std::ostream& operator<<(std::ostream& os, time const& rhs)
 	{
-		os << rhs.hours() << ':' << rhs.minutes() << ':' << rhs.seconds();
+		os << to_string(rhs.hours(), 2) << ':' << to_string(rhs.minutes(), 2) << ':' << to_string(rhs.seconds(), 2);
 		return os;
 	}
 
@@ -33,6 +44,13 @@ namespace supermarx
 	{
 		os << rhs.date() << ' ' << rhs.time_of_day();
 		return os;
+	}
+
+	inline std::string to_string(time const& rhs)
+	{
+		std::stringstream sstr;
+		sstr << rhs;
+		return sstr.str();
 	}
 
 	inline std::string to_string(date const& rhs)
