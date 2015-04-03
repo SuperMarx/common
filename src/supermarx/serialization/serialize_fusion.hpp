@@ -54,6 +54,17 @@ struct serialize_value<std::vector<T>>
 	}
 };
 
+template<typename T, typename U>
+struct serialize_value<std::pair<T, U>>
+{
+	static inline void exec(const std::unique_ptr<serializer>& s, const std::string name, const std::pair<T, U>& x)
+	{
+		s->write_array(name, 2);
+		serialize_value<T>::exec(s, name + "_first", x.first);
+		serialize_value<U>::exec(s, name + "_second", x.second);
+	}
+};
+
 template<typename T>
 struct serialize_value<boost::optional<T>>
 {
