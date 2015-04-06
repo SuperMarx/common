@@ -29,7 +29,7 @@ public:
 	api(api&) = delete;
 	void operator=(api&) = delete;
 
-	void add_product(product const& p, id_t supermarket_id) const;
+	void add_product(product const& p, id_t supermarket_id);
 };
 
 }

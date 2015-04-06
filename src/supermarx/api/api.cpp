@@ -11,7 +11,7 @@ namespace supermarx
 static const std::string formatstr = "?format=msgpack";
 
 template<typename T>
-std::string post(api::serializer_ptr const& s, downloader const& dl, std::string const& uri, std::string const& name, const T& x)
+std::string post(api::serializer_ptr const& s, downloader& dl, std::string const& uri, std::string const& name, const T& x)
 {
 	serialize<T>(s, name, x);
 
@@ -36,7 +36,7 @@ api::api(std::string const& _basepath, std::string const& _agent)
 	, d(new msgpack_deserializer())
 {}
 
-void api::add_product(product const& p, id_t supermarket_id) const
+void api::add_product(product const& p, id_t supermarket_id)
 {
 	std::string response = post(s, dl, basepath + "/add_product/" + boost::lexical_cast<std::string>(supermarket_id) + formatstr, "product", p);
 

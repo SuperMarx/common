@@ -4,6 +4,9 @@
 #include <string>
 #include <map>
 
+#include <boost/optional.hpp>
+#include <supermarx/util/timer.hpp>
+
 typedef void CURL;
 
 namespace supermarx
@@ -18,13 +21,17 @@ public:
 private:
 	std::string agent, referer, cookies;
 
+	unsigned int ratelimit;
+	boost::optional<timer> last_request;
+
 	curl_ptr create_handle() const;
+	void await_ratelimit();
 
 public:
-	downloader(const std::string& agent);
+	downloader(const std::string& agent, unsigned int ratelimit = 0);
 
-	std::string fetch(const std::string& url) const;
-	std::string post(const std::string& url, const formmap& form) const;
+	std::string fetch(const std::string& url);
+	std::string post(const std::string& url, const formmap& form);
 
 	void set_cookies(const std::string& cookies);
 	void set_referer(const std::string& referer);

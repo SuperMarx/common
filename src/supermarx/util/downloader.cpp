@@ -1,5 +1,6 @@
 #include "downloader.hpp"
 
+#include <thread>
 #include <memory>
 #include <curl/curl.h>
 
@@ -37,14 +38,30 @@ downloader::curl_ptr downloader::create_handle() const
 	return curl_ptr(handle, &curl_easy_cleanup);
 }
 
-downloader::downloader(const std::string& _agent)
+downloader::downloader(const std::string& _agent, unsigned int _ratelimit)
 	: agent(_agent)
 	, referer()
 	, cookies()
+	, ratelimit(_ratelimit)
+	, last_request()
 {}
 
-std::string downloader::fetch(const std::string& url) const
+void downloader::await_ratelimit()
 {
+	if(last_request)
+	{
+		auto todo = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::milliseconds(ratelimit) - last_request->diff());
+		if(todo > std::chrono::milliseconds(0))
+			std::this_thread::sleep_for(todo);
+	}
+
+	last_request = timer();
+}
+
+std::string downloader::fetch(const std::string& url)
+{
+	await_ratelimit();
+
 	std::string result;
 	curl_ptr handle(create_handle());
 
@@ -55,8 +72,10 @@ std::string downloader::fetch(const std::string& url) const
 	return result;
 }
 
-std::string downloader::post(const std::string& url, const downloader::formmap& form) const
+std::string downloader::post(const std::string& url, const downloader::formmap& form)
 {
+	await_ratelimit();
+
 	std::string result, formdata;
 	curl_ptr handle(create_handle());
 
