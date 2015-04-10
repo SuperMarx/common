@@ -1,5 +1,5 @@
 add_library(supermarx-api
-			api.cpp)
+			client.cpp)
 
 target_link_libraries(supermarx-api supermarx-downloader supermarx-serialization-msgpack)
 

@@ -7,10 +7,12 @@
 
 namespace supermarx
 {
+namespace api
+{
 
 struct product_summary
 {
-	typedef std::pair<date, uint64_t> pricepoint_t;
+	typedef std::pair<datetime, uint64_t> pricepoint_t;
 
 	std::string identifier; // Internal reference as used by scrapers
 	std::string name;
@@ -19,10 +21,11 @@ struct product_summary
 };
 
 }
+}
 
 BOOST_FUSION_ADAPT_STRUCT(
-		supermarx::product_summary,
+		supermarx::api::product_summary,
 		(std::string, identifier)
 		(std::string, name)
-		(std::vector<supermarx::product_summary::pricepoint_t>, pricehistory)
+		(std::vector<supermarx::api::product_summary::pricepoint_t>, pricehistory)
 )

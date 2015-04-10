@@ -110,6 +110,17 @@ struct deserialize_value<condition>
 	}
 };
 
+template<>
+struct deserialize_value<confidence>
+{
+	static inline confidence exec(const std::unique_ptr<deserializer>& s, const std::string name)
+	{
+		std::string str;
+		s->read(name, str);
+		return to_confidence(str);
+	}
+};
+
 /* Mechanics */
 template<typename T, typename N, typename... XS>
 struct deserialize_itr

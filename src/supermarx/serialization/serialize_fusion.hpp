@@ -91,6 +91,15 @@ struct serialize_value<condition>
 	}
 };
 
+template<>
+struct serialize_value<confidence>
+{
+	static inline void exec(const std::unique_ptr<serializer>& s, const std::string name, const confidence& xs)
+	{
+		s->write(name, to_string(xs));
+	}
+};
+
 template<typename T, typename N>
 using name_t = boost::fusion::extension::struct_member_name<T, N::value>;
 

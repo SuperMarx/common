@@ -9,8 +9,10 @@
 
 namespace supermarx
 {
+namespace api
+{
 
-class api
+class client
 {
 public:
 	typedef std::unique_ptr<serializer> serializer_ptr;
@@ -23,13 +25,14 @@ private:
 	deserializer_ptr d;
 
 public:
-	api(std::string const& agent);
-	api(std::string const& basepath, std::string const& agent);
+	client(std::string const& agent);
+	client(std::string const& basepath, std::string const& agent);
 
-	api(api&) = delete;
-	void operator=(api&) = delete;
+	client(client&) = delete;
+	void operator=(client&) = delete;
 
-	void add_product(product const& p, id_t supermarket_id);
+	void add_product(product const& p, id_t supermarket_id, datetime retrieved_on, confidence c);
 };
 
+}
 }

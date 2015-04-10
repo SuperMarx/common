@@ -23,8 +23,15 @@ struct product
 	uint64_t price; // In (euro)cents, with discount applied
 	condition discount_condition;
 
-	date valid_on;
-	datetime retrieved_on;
+	datetime valid_on;
+};
+
+enum class confidence
+{
+	LOW,
+	NEUTRAL,
+	HIGH,
+	PERFECT
 };
 
 inline std::string to_string(condition cond)
@@ -52,6 +59,35 @@ inline condition to_condition(std::string const& str)
 	throw std::runtime_error("Could not parse condition");
 }
 
+inline std::string to_string(confidence conf)
+{
+	switch(conf)
+	{
+	case confidence::LOW:
+		return "LOW";
+	case confidence::NEUTRAL:
+		return "NEUTRAL";
+	case confidence::HIGH:
+		return "HIGH";
+	case confidence::PERFECT:
+		return "PERFECT";
+	}
+}
+
+inline confidence to_confidence(std::string const& str)
+{
+	if(str == "LOW")
+		return confidence::LOW;
+	else if(str == "NEUTRAL")
+		return confidence::NEUTRAL;
+	else if(str == "HIGH")
+		return confidence::HIGH;
+	else if(str == "PERFECT")
+		return confidence::PERFECT;
+
+	throw std::runtime_error("Could not parse confidence");
+}
+
 }
 
 BOOST_FUSION_ADAPT_STRUCT(
@@ -62,6 +98,5 @@ BOOST_FUSION_ADAPT_STRUCT(
 		(uint64_t, price)
 		(supermarx::condition, discount_condition)
 
-		(supermarx::date, valid_on)
-		(supermarx::datetime, retrieved_on)
+		(supermarx::datetime, valid_on)
 )
