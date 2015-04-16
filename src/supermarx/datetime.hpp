@@ -44,7 +44,7 @@ namespace supermarx
 
 	inline std::ostream& operator<<(std::ostream& os, datetime const& rhs)
 	{
-		os << rhs.date() << ' ' << rhs.time_of_day();
+		os << rhs.date() << 'T' << rhs.time_of_day();
 		return os;
 	}
 
@@ -108,7 +108,7 @@ namespace supermarx
 
 	inline datetime to_datetime(std::string const& str)
 	{
-		const static boost::regex int_regex("([0-9]{4}-[0-9]{2}-[0-9]{2}) ([0-9]{2}:[0-9]{2}:[0-9]{2})");
+		const static boost::regex int_regex("([0-9]{4}-[0-9]{2}-[0-9]{2})[T| ]([0-9]{2}:[0-9]{2}:[0-9]{2})");
 		boost::smatch match;
 		if(boost::regex_match(str, match, int_regex))
 			return datetime(
