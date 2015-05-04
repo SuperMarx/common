@@ -100,6 +100,17 @@ struct deserialize_value<boost::optional<T>>
 };
 
 template<>
+struct deserialize_value<measure>
+{
+	static inline measure exec(const std::unique_ptr<deserializer>& s, const std::string name)
+	{
+		std::string str;
+		s->read(name, str);
+		return to_measure(str);
+	}
+};
+
+template<>
 struct deserialize_value<confidence>
 {
 	static inline confidence exec(const std::unique_ptr<deserializer>& s, const std::string name)

@@ -83,6 +83,15 @@ struct serialize_value<boost::optional<T>>
 };
 
 template<>
+struct serialize_value<measure>
+{
+	static inline void exec(const std::unique_ptr<serializer>& s, const std::string name, const measure& xs)
+	{
+		s->write(name, to_string(xs));
+	}
+};
+
+template<>
 struct serialize_value<confidence>
 {
 	static inline void exec(const std::unique_ptr<serializer>& s, const std::string name, const confidence& xs)
