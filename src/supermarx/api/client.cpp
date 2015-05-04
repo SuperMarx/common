@@ -40,9 +40,9 @@ client::client(std::string const& _basepath, std::string const& _agent)
 	, d(new msgpack_deserializer())
 {}
 
-void client::add_product(product const& p, id_t supermarket_id, datetime retrieved_on, confidence c)
+void client::add_product(product const& p, id_t supermarket_id, datetime retrieved_on, confidence c, std::vector<std::string> const& problems)
 {
-	api::add_product request({p, retrieved_on, c});
+	api::add_product request({p, retrieved_on, c, problems});
 	std::string response = post(s, dl, basepath + "/add_product/" + boost::lexical_cast<std::string>(supermarket_id) + formatstr, "add_product", request);
 
 	try

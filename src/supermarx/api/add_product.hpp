@@ -14,6 +14,7 @@ struct add_product
 	product p;
 	datetime retrieved_on;
 	confidence c;
+	std::vector<std::string> problems;
 };
 
 }
@@ -24,4 +25,5 @@ BOOST_FUSION_ADAPT_STRUCT(
 		(supermarx::product, p)
 		(supermarx::datetime, retrieved_on)
 		(supermarx::confidence, c)
+		(std::vector<std::string>, problems)
 )

@@ -31,7 +31,7 @@ public:
 	client(client&) = delete;
 	void operator=(client&) = delete;
 
-	void add_product(product const& p, id_t supermarket_id, datetime retrieved_on, confidence c);
+	void add_product(product const& p, id_t supermarket_id, datetime retrieved_on, confidence c, std::vector<std::string> const& problems);
 };
 
 }
