@@ -7,6 +7,10 @@
 namespace supermarx
 {
 
+downloader::error::error(const std::string &_arg)
+: std::runtime_error(_arg)
+{}
+
 static size_t downloader_write_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
 	size_t realsize = size * nmemb;
@@ -33,6 +37,8 @@ downloader::curl_ptr downloader::create_handle() const
 	curl_easy_setopt(handle, CURLOPT_COOKIE, cookies.c_str());
 	curl_easy_setopt(handle, CURLOPT_USERAGENT, agent.c_str());
 	curl_easy_setopt(handle, CURLOPT_ENCODING, "UTF-8");
+	curl_easy_setopt(handle, CURLOPT_TIMEOUT, 5);
+	curl_easy_setopt(handle, CURLOPT_ERRORBUFFER, error_msg.get());
 	curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, downloader_write_callback);
 
 	return curl_ptr(handle, &curl_easy_cleanup);
@@ -44,6 +50,7 @@ downloader::downloader(const std::string& _agent, unsigned int _ratelimit)
 	, cookies()
 	, ratelimit(_ratelimit)
 	, last_request()
+	, error_msg(new char[CURL_ERROR_SIZE])
 {}
 
 void downloader::await_ratelimit()
@@ -67,7 +74,9 @@ std::string downloader::fetch(const std::string& url)
 
 	curl_easy_setopt(handle.get(), CURLOPT_URL, url.c_str());
 	curl_easy_setopt(handle.get(), CURLOPT_WRITEDATA, (void *)&result);
-	curl_easy_perform(handle.get());
+
+	if(CURLE_OK != curl_easy_perform(handle.get()))
+		throw downloader::error(error_msg.get());
 
 	return result;
 }
@@ -107,7 +116,8 @@ std::string downloader::post(const std::string& url, const downloader::formmap& 
 	curl_easy_setopt(handle.get(), CURLOPT_POSTFIELDS, formdata.c_str());
 	curl_easy_setopt(handle.get(), CURLOPT_WRITEDATA, (void *)&result);
 
-	curl_easy_perform(handle.get());
+	if(CURLE_OK != curl_easy_perform(handle.get()))
+		throw downloader::error(error_msg.get());
 
 	curl_slist_free_all(headerlist);
 

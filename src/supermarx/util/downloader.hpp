@@ -18,11 +18,18 @@ public:
 	typedef std::map<std::string, std::string> formmap;
 	typedef std::unique_ptr<CURL, std::function<void(CURL*)>> curl_ptr;
 
+	class error : public std::runtime_error
+	{
+	public:
+		error(std::string const &_arg);
+	};
+
 private:
 	std::string agent, referer, cookies;
 
 	unsigned int ratelimit;
 	boost::optional<timer> last_request;
+	std::unique_ptr<char[]> error_msg;
 
 	curl_ptr create_handle() const;
 	void await_ratelimit();
