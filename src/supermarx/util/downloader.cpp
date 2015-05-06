@@ -4,6 +4,8 @@
 #include <memory>
 #include <curl/curl.h>
 
+#include <supermarx/util/guard.hpp>
+
 namespace supermarx
 {
 
@@ -37,7 +39,7 @@ downloader::curl_ptr downloader::create_handle() const
 	curl_easy_setopt(handle, CURLOPT_COOKIE, cookies.c_str());
 	curl_easy_setopt(handle, CURLOPT_USERAGENT, agent.c_str());
 	curl_easy_setopt(handle, CURLOPT_ENCODING, "UTF-8");
-	curl_easy_setopt(handle, CURLOPT_TIMEOUT, 5);
+	curl_easy_setopt(handle, CURLOPT_TIMEOUT, 30);
 	curl_easy_setopt(handle, CURLOPT_ERRORBUFFER, error_msg.get());
 	curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, downloader_write_callback);
 
@@ -61,13 +63,12 @@ void downloader::await_ratelimit()
 		if(todo > std::chrono::milliseconds(0))
 			std::this_thread::sleep_for(todo);
 	}
-
-	last_request = timer();
 }
 
 std::string downloader::fetch(const std::string& url)
 {
 	await_ratelimit();
+	guard g([&](){ last_request = timer(); });
 
 	std::string result;
 	curl_ptr handle(create_handle());
@@ -84,6 +85,7 @@ std::string downloader::fetch(const std::string& url)
 std::string downloader::post(const std::string& url, const downloader::formmap& form)
 {
 	await_ratelimit();
+	guard g([&](){ last_request = timer(); });
 
 	std::string result, formdata;
 	curl_ptr handle(create_handle());
