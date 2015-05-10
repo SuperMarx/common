@@ -2,6 +2,8 @@
 
 #include <stdexcept>
 
+#include <supermarx/util/base64.hpp>
+
 namespace supermarx
 {
 
@@ -68,6 +70,11 @@ void json_serializer::write(const std::string& key, const uint64_t x)
 void json_serializer::write(const std::string& key, const std::string& x)
 {
 	add_node(key, 0, Json::Value(x));
+}
+
+void json_serializer::write(const std::string& key, const raw& x)
+{
+	write(key, base64::conv(x.data(), x.length()));
 }
 
 void json_serializer::dump(std::function<void(const char*, size_t)> f)

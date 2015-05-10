@@ -39,7 +39,7 @@ downloader::curl_ptr downloader::create_handle() const
 	curl_easy_setopt(handle, CURLOPT_COOKIE, cookies.c_str());
 	curl_easy_setopt(handle, CURLOPT_USERAGENT, agent.c_str());
 	curl_easy_setopt(handle, CURLOPT_ENCODING, "UTF-8");
-	curl_easy_setopt(handle, CURLOPT_TIMEOUT, 30);
+	curl_easy_setopt(handle, CURLOPT_TIMEOUT, 60);
 	curl_easy_setopt(handle, CURLOPT_ERRORBUFFER, error_msg.get());
 	curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, downloader_write_callback);
 

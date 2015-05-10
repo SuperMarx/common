@@ -4,6 +4,7 @@
 #include <functional>
 
 #include <supermarx/datetime.hpp>
+#include <supermarx/raw.hpp>
 
 namespace supermarx
 {
@@ -21,6 +22,7 @@ public:
 
 	virtual void write(const std::string& key, const uint64_t x) = 0;
 	virtual void write(const std::string& key, const std::string& x) = 0;
+	virtual void write(const std::string& key, const raw& x) = 0;
 
 	virtual void dump(std::function<void(const char*, size_t)> f) = 0;
 	virtual void clear() = 0;

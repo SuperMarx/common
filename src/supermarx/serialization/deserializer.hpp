@@ -4,6 +4,7 @@
 #include <string>
 
 #include <supermarx/datetime.hpp>
+#include <supermarx/raw.hpp>
 
 namespace supermarx
 {
@@ -31,6 +32,7 @@ public:
 
 	virtual void read(const std::string& key, uint64_t& x) = 0;
 	virtual void read(const std::string& key, std::string& x) = 0;
+	virtual void read(const std::string& key, raw& x) = 0;
 
 	void read(const std::string& key, bool& x);
 	void read(const std::string& key, time& x);

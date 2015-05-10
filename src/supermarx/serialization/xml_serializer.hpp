@@ -19,6 +19,7 @@ public:
 
 	virtual void write(const std::string& key, const uint64_t x);
 	virtual void write(const std::string& key, const std::string& x);
+	virtual void write(const std::string& key, const raw& x);
 
 	virtual void dump(std::function<void(const char*, size_t)> f);
 	virtual void clear();

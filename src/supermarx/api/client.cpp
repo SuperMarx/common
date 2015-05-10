@@ -4,6 +4,7 @@
 #include <supermarx/serialization/msgpack_deserializer.hpp>
 
 #include <supermarx/serialization/serialize_fusion.hpp>
+#include <supermarx/serialization/deserialize_fusion.hpp>
 
 #include <supermarx/api/add_product.hpp>
 
@@ -40,6 +41,13 @@ client::client(std::string const& _basepath, std::string const& _agent)
 	, d(new msgpack_deserializer())
 {}
 
+api::product_summary client::get_product(id_t supermarket_id, const std::string &product_identifier)
+{
+	d->feed(dl.fetch(basepath + "/get_product/" + boost::lexical_cast<std::string>(supermarket_id) + "/" + product_identifier + formatstr));
+	api::product_summary result(deserialize<api::product_summary>(d, "product_summary"));
+	return result;
+}
+
 void client::add_product(product const& p, id_t supermarket_id, datetime retrieved_on, confidence c, std::vector<std::string> const& problems)
 {
 	api::add_product request({p, retrieved_on, c, problems});
@@ -61,6 +69,34 @@ void client::add_product(product const& p, id_t supermarket_id, datetime retriev
 	std::cerr << response << std::endl;
 	throw std::runtime_error("Did not receive valid response");
 }
+
+void client::add_product_image_citation(id_t supermarket_id, std::string const& product_identifier, std::string const& original_uri, std::string const& source_uri, const datetime &retrieved_on, raw &&image)
+{
+	api::add_product_image_citation request({
+		original_uri,
+		source_uri,
+		retrieved_on,
+		std::move(image)
+	});
+
+	std::string response = post(s, dl, basepath + "/add_product_image_citation/" + boost::lexical_cast<std::string>(supermarket_id) + "/" + product_identifier + formatstr, "add_product_image_citation", request);
+	try
+	{
+		d->feed(response);
+		std::string result;
+		d->read_object("response");
+		d->read("status", result);
+
+		if(result == "done")
+			return;
+	}
+	catch( ... )
+	{}
+
+	std::cerr << response << std::endl;
+	throw std::runtime_error("Did not receive valid response");
+}
+
 
 }
 }

@@ -37,6 +37,12 @@ void msgpack_compact_serializer::write(const std::string& /*key*/, const std::st
 	write(x);
 }
 
+void msgpack_compact_serializer::write(const std::string& /*key*/, const raw& x)
+{
+	pk.pack_bin(x.length());
+	pk.pack_bin_body(x.data(), x.length());
+}
+
 void msgpack_compact_serializer::dump(std::function<void(const char*, size_t)> f)
 {
 	f(buffer.data(), buffer.size());

@@ -29,6 +29,7 @@ serialize_value_primitive(bool)
 serialize_value_primitive(time)
 serialize_value_primitive(date)
 serialize_value_primitive(datetime)
+serialize_value_primitive(raw)
 
 /* Generic case */
 template<typename T>

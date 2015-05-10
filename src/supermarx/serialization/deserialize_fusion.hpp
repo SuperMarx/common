@@ -51,6 +51,7 @@ deserialize_value_primitive(bool)
 deserialize_value_primitive(time)
 deserialize_value_primitive(date)
 deserialize_value_primitive(datetime)
+deserialize_value_primitive(raw)
 
 /* Generic case */
 template<typename T>
@@ -139,7 +140,7 @@ struct deserialize_itr<T, size_t<T>, XS...>
 {
 	static inline T exec(const std::unique_ptr<deserializer>&, XS&&... xs)
 	{
-		return T({xs...});
+		return T({std::move(xs)...});
 	}
 };
 }

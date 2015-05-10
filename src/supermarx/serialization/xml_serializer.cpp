@@ -4,6 +4,8 @@
 #include <limits>
 #include <stdexcept>
 
+#include <supermarx/util/base64.hpp>
+
 namespace supermarx
 {
 
@@ -63,6 +65,11 @@ void xml_serializer::write(const std::string& key, const std::string& x)
 	tinyxml2::XMLNode *node = doc.NewElement(key.c_str());
 	node->InsertEndChild(doc.NewText(x.c_str()));
 	add_node(node);
+}
+
+void xml_serializer::write(const std::string& key, const raw& x)
+{
+	write(key, base64::conv(x.data(), x.length()));
 }
 
 void xml_serializer::dump(std::function<void(const char*, size_t)> f)

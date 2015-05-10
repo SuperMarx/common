@@ -147,6 +147,18 @@ void msgpack_deserializer::read(const std::string& key, uint64_t& x)
 	x = obj.via.u64;
 }
 
+void msgpack_deserializer::read(const std::string& key, raw& x)
+{
+	read_key(key);
+
+	const msgpack::object& obj = read();
+	if(obj.type != msgpack::type::BIN)
+		throw type_error(convert_msgpack_type(msgpack::type::BIN), convert_msgpack_type(obj.type));
+
+	raw tmp(obj.via.bin.ptr, obj.via.bin.size);
+	x.swap(tmp);
+}
+
 void msgpack_deserializer::read(const std::string& key, std::string& x)
 {
 	read_key(key);
