@@ -64,7 +64,9 @@ void client::add_product(product const& p, id_t supermarket_id, datetime retriev
 			return;
 	}
 	catch( ... )
-	{}
+	{
+		d.reset(new msgpack_deserializer()); // State uncertain; flush
+	}
 
 	std::cerr << response << std::endl;
 	throw std::runtime_error("Did not receive valid response");
@@ -91,7 +93,9 @@ void client::add_product_image_citation(id_t supermarket_id, std::string const& 
 			return;
 	}
 	catch( ... )
-	{}
+	{
+		d.reset(new msgpack_deserializer()); // State uncertain; flush
+	}
 
 	std::cerr << response << std::endl;
 	throw std::runtime_error("Did not receive valid response");
