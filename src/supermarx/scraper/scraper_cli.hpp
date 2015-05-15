@@ -149,9 +149,19 @@ public:
 
 				if(permission && images_downloaded < opt.extract_images_limit)
 				{
-					supermarx::raw img(s.download_image(*image_uri_opt));
+					supermarx::raw img;
 
-					if(!opt.dry_run)
+					try
+					{
+						supermarx::raw img_tmp(s.download_image(*image_uri_opt));
+						img.swap(img_tmp);
+					} catch(std::runtime_error const& e)
+					{
+						std::cerr << "Catched error whilst fetching image for " << product.identifier << " " << *image_uri_opt << std::endl;
+						std::cerr << e.what() << std::endl;
+					}
+
+					if(!opt.dry_run && img.length() > 0)
 					{
 						try
 						{
@@ -166,6 +176,7 @@ public:
 						} catch(std::runtime_error const& e)
 						{
 							std::cerr << "Catched error whilst pushing image for " << product.identifier << " " << *image_uri_opt << std::endl;
+							std::cerr << e.what() << std::endl;
 						}
 					}
 
