@@ -18,6 +18,7 @@ private:
 	struct cli_options
 	{
 		std::string api_host;
+		bool cache;
 		bool dry_run;
 		bool extract_images;
 		size_t extract_images_limit;
@@ -31,6 +32,7 @@ private:
 		o_general.add_options()
 				("help,h", "display this message")
 				("api,a", boost::program_options::value(&opt.api_host), "api host to send results to")
+				("cache,c", "caches assets downloaded from supermarket servers, useful when debugging")
 				("dry-run,d", "does not send products to api when set")
 				("extract-images,i", "extract product images")
 				("extract-images-limit,l", boost::program_options::value(&opt.extract_images_limit), "amount of images allowed to download in one session (default: 60)")
@@ -75,6 +77,7 @@ private:
 		if(!vm.count("api"))
 			opt.api_host = "https://api.supermarx.nl";
 
+		opt.cache = vm.count("cache");
 		opt.dry_run = vm.count("dry-run");
 		opt.extract_images = vm.count("extract-images");
 
@@ -183,7 +186,7 @@ public:
 					images_downloaded++;
 				}
 			}
-		}, opt.ratelimit);
+		}, opt.ratelimit, opt.cache);
 
 		s.scrape();
 
