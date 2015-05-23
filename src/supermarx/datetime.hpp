@@ -118,4 +118,15 @@ namespace supermarx
 
 		throw std::runtime_error("Can not parse datetime-string");
 	}
+
+	inline date next_occurance(size_t month, size_t day)
+	{
+		date now(datetime_now().date());
+
+		date candidate(now.year(), month, day);
+		if(now >= candidate)
+			return date(now.year()+1, month, day);
+		else
+			return candidate;
+	}
 }
