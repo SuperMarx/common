@@ -20,6 +20,7 @@ public:
 	virtual void read(const std::string& key, uint64_t& x);
 	virtual void read(const std::string& key, std::string& x);
 	virtual void read(const std::string& key, raw& x);
+	virtual void read(const std::string& key, token& x);
 
 	virtual void feed(const std::string& str);
 

@@ -3,6 +3,8 @@
 #include <supermarx/id_t.hpp>
 #include <supermarx/product.hpp>
 
+#include <supermarx/api/session.hpp>
+
 #include <supermarx/util/downloader.hpp>
 #include <supermarx/serialization/serializer.hpp>
 #include <supermarx/serialization/deserializer.hpp>
@@ -27,12 +29,16 @@ private:
 	serializer_ptr s;
 	deserializer_ptr d;
 
+	boost::optional<sessiontoken> stok;
+
 public:
 	client(std::string const& agent);
 	client(std::string const& basepath, std::string const& agent);
 
 	client(client&) = delete;
 	void operator=(client&) = delete;
+
+	void promote(std::string const& username, std::string const& password);
 
 	api::product_summary get_product(id_t supermarket_id, std::string const& product_identifier);
 	void add_product(product const& p, id_t supermarket_id, datetime retrieved_on, confidence c, std::vector<std::string> const& problems);

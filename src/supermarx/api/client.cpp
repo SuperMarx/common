@@ -8,6 +8,8 @@
 
 #include <supermarx/api/add_product.hpp>
 
+#include <supermarx/api/session_operations.hpp>
+
 namespace supermarx
 {
 namespace api
@@ -16,7 +18,7 @@ namespace api
 static const std::string formatstr = "?format=msgpack";
 
 template<typename T>
-std::string post(client::serializer_ptr const& s, downloader& dl, std::string const& uri, std::string const& name, const T& x)
+std::string post(client::serializer_ptr const& s, downloader& dl, std::string const& uri, std::string const& name, const T& x, boost::optional<sessiontoken> const& stok)
 {
 	serialize<T>(s, name, x);
 
@@ -26,7 +28,10 @@ std::string post(client::serializer_ptr const& s, downloader& dl, std::string co
 	});
 	s->clear();
 
-	return dl.post(uri, {{"payload", payload}});
+	if(!stok)
+		return dl.post(uri, {{"payload", payload}});
+	else
+		return dl.post(uri, {{"payload", payload}, {"sessiontoken", to_string(*stok)}});
 }
 
 
@@ -39,7 +44,22 @@ client::client(std::string const& _basepath, std::string const& _agent)
 	, dl(_agent)
 	, s(new msgpack_serializer())
 	, d(new msgpack_deserializer())
+	, stok()
 {}
+
+void client::promote(std::string const& username, std::string const& password)
+{
+	d->feed(dl.fetch(basepath + "/create_sessionticket/" + username + formatstr));
+
+	sessionticket st(deserialize<sessionticket>(d, "sessiontoken"));
+
+	token const passphrase_salted(hash(password, st.salt));
+	token const passphrase_hashed(hash(passphrase_salted, st.nonce));
+
+	d->feed(dl.post(basepath + "/login/" + boost::lexical_cast<std::string>(st.id) + formatstr, {{"password_hashed", to_string(passphrase_hashed)}}));
+
+	stok.reset(deserialize<sessiontoken>(d, "sessiontoken"));
+}
 
 api::product_summary client::get_product(id_t supermarket_id, const std::string &product_identifier)
 {
@@ -51,7 +71,7 @@ api::product_summary client::get_product(id_t supermarket_id, const std::string 
 void client::add_product(product const& p, id_t supermarket_id, datetime retrieved_on, confidence c, std::vector<std::string> const& problems)
 {
 	api::add_product request({p, retrieved_on, c, problems});
-	std::string response = post(s, dl, basepath + "/add_product/" + boost::lexical_cast<std::string>(supermarket_id) + formatstr, "add_product", request);
+	std::string response = post(s, dl, basepath + "/add_product/" + boost::lexical_cast<std::string>(supermarket_id) + formatstr, "add_product", request, stok);
 
 	try
 	{
@@ -81,7 +101,7 @@ void client::add_product_image_citation(id_t supermarket_id, std::string const& 
 		std::move(image)
 	});
 
-	std::string response = post(s, dl, basepath + "/add_product_image_citation/" + boost::lexical_cast<std::string>(supermarket_id) + "/" + product_identifier + formatstr, "add_product_image_citation", request);
+	std::string response = post(s, dl, basepath + "/add_product_image_citation/" + boost::lexical_cast<std::string>(supermarket_id) + "/" + product_identifier + formatstr, "add_product_image_citation", request, stok);
 	try
 	{
 		d->feed(response);

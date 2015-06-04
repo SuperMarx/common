@@ -52,6 +52,7 @@ deserialize_value_primitive(time)
 deserialize_value_primitive(date)
 deserialize_value_primitive(datetime)
 deserialize_value_primitive(raw)
+deserialize_value_primitive(token)
 
 /* Generic case */
 template<typename T>

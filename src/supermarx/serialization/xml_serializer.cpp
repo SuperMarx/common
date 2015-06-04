@@ -72,6 +72,11 @@ void xml_serializer::write(const std::string& key, const raw& x)
 	write(key, base64::conv(x.data(), x.length()));
 }
 
+void xml_serializer::write(const std::string &key, const token &x)
+{
+	write(key, to_string(x));
+}
+
 void xml_serializer::dump(std::function<void(const char*, size_t)> f)
 {
 	tinyxml2::XMLPrinter printer;

@@ -159,6 +159,20 @@ void msgpack_deserializer::read(const std::string& key, raw& x)
 	x.swap(tmp);
 }
 
+void msgpack_deserializer::read(const std::string &key, token &x)
+{
+	read_key(key);
+
+	const msgpack::object& obj = read();
+	if(obj.type != msgpack::type::BIN)
+		throw type_error(convert_msgpack_type(msgpack::type::BIN), convert_msgpack_type(obj.type));
+
+	if(obj.via.bin.size != x.size())
+		throw std::runtime_error("Incorrect size of token from msgpack_deserializer buffer");
+
+	std::memcpy(x.data(), obj.via.bin.ptr, obj.via.bin.size);
+}
+
 void msgpack_deserializer::read(const std::string& key, std::string& x)
 {
 	read_key(key);

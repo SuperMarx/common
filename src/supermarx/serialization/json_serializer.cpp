@@ -77,6 +77,11 @@ void json_serializer::write(const std::string& key, const raw& x)
 	write(key, base64::conv(x.data(), x.length()));
 }
 
+void json_serializer::write(const std::string &key, const token &x)
+{
+	write(key, to_string(x));
+}
+
 void json_serializer::dump(std::function<void(const char*, size_t)> f)
 {
 	Json::StyledWriter w;
