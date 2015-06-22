@@ -25,6 +25,7 @@ private:
 		bool dry_run;
 		bool extract_images;
 		size_t extract_images_limit;
+		bool register_tags;
 		size_t ratelimit;
 		bool silent;
 	};
@@ -40,6 +41,7 @@ private:
 				("dry-run,d", "does not send products to api when set")
 				("extract-images,i", "extract product images")
 				("extract-images-limit,l", boost::program_options::value(&opt.extract_images_limit), "amount of images allowed to download in one session (default: 60)")
+				("register-tags,t", "extract and register tags corresponding to the products")
 				("ratelimit,r", boost::program_options::value(&opt.ratelimit), "minimal time between each request in milliseconds (default: 30000)")
 				("silent,s", "do not write status reports to cerr");
 
@@ -91,6 +93,8 @@ private:
 
 		if(!vm.count("extract-images-limit"))
 			opt.extract_images_limit = 60;
+
+		opt.register_tags = vm.count("register-tags");
 
 		if(!vm.count("ratelimit"))
 			opt.ratelimit = 30000;

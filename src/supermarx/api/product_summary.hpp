@@ -16,6 +16,8 @@ struct product_summary
 	std::string identifier; // Internal reference as used by scrapers
 	std::string name;
 
+	id_t productclass_id;
+
 	uint64_t volume;
 	measure volume_measure;
 
@@ -35,6 +37,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 			supermarx::api::product_summary,
 			(std::string, identifier)
 			(std::string, name)
+			(supermarx::id_t, productclass_id)
 			(uint64_t, volume)
 			(supermarx::measure, volume_measure)
 			(uint64_t, orig_price)
