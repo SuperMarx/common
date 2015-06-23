@@ -6,7 +6,7 @@
 
 namespace supermarx
 {
-namespace api
+namespace message
 {
 
 struct add_product_image_citation
@@ -23,7 +23,7 @@ struct add_product_image_citation
 }
 
 BOOST_FUSION_ADAPT_STRUCT(
-		supermarx::api::add_product_image_citation,
+		supermarx::message::add_product_image_citation,
 		(std::string, original_uri)
 		(std::string, source_uri)
 		(supermarx::datetime, retrieved_on)

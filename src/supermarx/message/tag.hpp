@@ -7,7 +7,7 @@
 
 namespace supermarx
 {
-namespace api
+namespace message
 {
 
 struct tag
@@ -20,7 +20,7 @@ struct tag
 }
 
 BOOST_FUSION_ADAPT_STRUCT(
-		supermarx::api::tag,
+		supermarx::message::tag,
 		(std::string, name)
 		(boost::optional<std::string>, category)
 )

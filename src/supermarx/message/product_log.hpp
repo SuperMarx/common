@@ -7,25 +7,23 @@
 
 namespace supermarx
 {
-namespace api
+namespace message
 {
 
-struct product_history
+struct product_log
 {
-	typedef std::pair<datetime, uint64_t> pricepoint_t;
-
 	std::string identifier; // Internal reference as used by scrapers
 	std::string name;
 
-	std::vector<pricepoint_t> pricehistory;
+	std::vector<std::string> messages;
 };
 
 }
 }
 
 BOOST_FUSION_ADAPT_STRUCT(
-		supermarx::api::product_history,
+		supermarx::message::product_log,
 		(std::string, identifier)
 		(std::string, name)
-		(std::vector<supermarx::api::product_history::pricepoint_t>, pricehistory)
+		(std::vector<std::string>, messages)
 )

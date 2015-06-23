@@ -174,7 +174,7 @@ public:
 					permission = true;
 				else
 				{
-					supermarx::api::product_summary ps(api.get_product(supermarket_id, product.identifier));
+					supermarx::message::product_summary ps(api.get_product(supermarket_id, product.identifier));
 					if(!ps.imagecitation_id)
 						permission = true;
 				}

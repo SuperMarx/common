@@ -5,8 +5,6 @@
 #include <supermarx/measure.hpp>
 #include <supermarx/confidence.hpp>
 
-#include <supermarx/api/tag.hpp>
-
 #include <boost/fusion/include/adapt_struct.hpp>
 
 namespace supermarx

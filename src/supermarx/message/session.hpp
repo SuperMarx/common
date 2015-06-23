@@ -13,7 +13,7 @@ namespace data
 struct sessionticket;
 }
 
-namespace api
+namespace message
 {
 
 struct sessionticket
@@ -29,7 +29,7 @@ typedef token sessiontoken;
 }
 
 BOOST_FUSION_ADAPT_STRUCT(
-			supermarx::api::sessionticket,
+			supermarx::message::sessionticket,
 			(supermarx::reference<supermarx::data::sessionticket>, id)
 			(supermarx::token, nonce)
 			(supermarx::token, salt)

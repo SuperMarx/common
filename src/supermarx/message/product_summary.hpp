@@ -8,7 +8,7 @@
 
 namespace supermarx
 {
-namespace api
+namespace message
 {
 
 struct product_summary
@@ -34,7 +34,7 @@ struct product_summary
 }
 
 BOOST_FUSION_ADAPT_STRUCT(
-			supermarx::api::product_summary,
+			supermarx::message::product_summary,
 			(std::string, identifier)
 			(std::string, name)
 			(supermarx::id_t, productclass_id)

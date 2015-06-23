@@ -6,7 +6,7 @@
 
 namespace supermarx
 {
-namespace api
+namespace message
 {
 
 struct add_product
@@ -21,7 +21,7 @@ struct add_product
 }
 
 BOOST_FUSION_ADAPT_STRUCT(
-		supermarx::api::add_product,
+		supermarx::message::add_product,
 		(supermarx::product, p)
 		(supermarx::datetime, retrieved_on)
 		(supermarx::confidence, c)

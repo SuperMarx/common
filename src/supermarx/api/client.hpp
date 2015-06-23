@@ -3,14 +3,13 @@
 #include <supermarx/id_t.hpp>
 #include <supermarx/product.hpp>
 
-#include <supermarx/api/session.hpp>
-
 #include <supermarx/util/downloader.hpp>
 #include <supermarx/serialization/serializer.hpp>
 #include <supermarx/serialization/deserializer.hpp>
 
-#include <supermarx/api/product_summary.hpp>
-#include <supermarx/api/add_product_image_citation.hpp>
+#include <supermarx/message/product_summary.hpp>
+#include <supermarx/message/add_product_image_citation.hpp>
+#include <supermarx/message/session.hpp>
 
 namespace supermarx
 {
@@ -29,7 +28,7 @@ private:
 	serializer_ptr s;
 	deserializer_ptr d;
 
-	boost::optional<sessiontoken> stok;
+	boost::optional<message::sessiontoken> stok;
 
 public:
 	client(std::string const& agent);
@@ -40,7 +39,7 @@ public:
 
 	void promote(std::string const& username, std::string const& password);
 
-	api::product_summary get_product(id_t supermarket_id, std::string const& product_identifier);
+	message::product_summary get_product(id_t supermarket_id, std::string const& product_identifier);
 	void add_product(product const& p, id_t supermarket_id, datetime retrieved_on, confidence c, std::vector<std::string> const& problems);
 
 	void add_product_image_citation(id_t supermarket_id, std::string const& product_identifier, std::string const& original_uri, std::string const& source_uri, const datetime &retrieved_on, raw &&image);
