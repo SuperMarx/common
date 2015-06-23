@@ -3,11 +3,19 @@
 #include <utility>
 #include <supermarx/id_t.hpp>
 
+#include <supermarx/data/product.hpp>
+#include <supermarx/data/productdetails.hpp>
+
 #include <boost/optional.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 
 namespace supermarx
 {
+namespace data
+{
+struct productclass;
+}
+
 namespace message
 {
 
@@ -16,7 +24,7 @@ struct product_summary
 	std::string identifier; // Internal reference as used by scrapers
 	std::string name;
 
-	id_t productclass_id;
+	reference<data::productclass> productclass_id;
 
 	uint64_t volume;
 	measure volume_measure;
@@ -28,6 +36,21 @@ struct product_summary
 	datetime valid_on;
 
 	boost::optional<id_t> imagecitation_id;
+
+	static product_summary merge(data::product const& p, data::productdetails const& pd)
+	{
+		return product_summary({
+			p.identifier,
+			p.name,
+			p.productclass_id,
+			p.volume,
+			p.volume_measure,
+			pd.orig_price,
+			pd.price,
+			pd.discount_amount,
+			pd.valid_on
+		});
+	}
 };
 
 }
@@ -37,7 +60,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 			supermarx::message::product_summary,
 			(std::string, identifier)
 			(std::string, name)
-			(supermarx::id_t, productclass_id)
+			(supermarx::reference<supermarx::data::productclass>, productclass_id)
 			(uint64_t, volume)
 			(supermarx::measure, volume_measure)
 			(uint64_t, orig_price)
