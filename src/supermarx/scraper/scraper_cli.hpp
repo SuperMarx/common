@@ -139,7 +139,7 @@ public:
 		SCRAPER s([&](
 			std::string const& source_uri,
 			boost::optional<std::string> const& image_uri_opt,
-			product const& product,
+			message::product_base const& product,
 			datetime retrieved_on,
 			confidence c,
 			std::vector<std::string> problems
@@ -165,7 +165,10 @@ public:
 			}
 
 			if(!opt.dry_run)
-				api.add_product(product, supermarket_id, retrieved_on, c, problems);
+			{
+				message::add_product ap({product, retrieved_on, c, problems});
+				api.add_product(supermarket_id, ap);
+			}
 
 			if(opt.extract_images && image_uri_opt)
 			{

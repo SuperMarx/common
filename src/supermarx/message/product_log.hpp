@@ -1,7 +1,8 @@
 #pragma once
 
 #include <utility>
-#include <supermarx/product.hpp>
+#include <string>
+#include <vector>
 
 #include <boost/fusion/include/adapt_struct.hpp>
 

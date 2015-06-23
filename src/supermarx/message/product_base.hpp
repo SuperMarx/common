@@ -9,8 +9,10 @@
 
 namespace supermarx
 {
+namespace message
+{
 
-struct product
+struct product_base
 {
 	std::string identifier; // Internal reference as used by scrapers
 	std::string name;
@@ -26,9 +28,10 @@ struct product
 };
 
 }
+}
 
 BOOST_FUSION_ADAPT_STRUCT(
-		supermarx::product,
+		supermarx::message::product_base,
 		(std::string, identifier)
 		(std::string, name)
 		(uint64_t, volume)

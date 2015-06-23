@@ -1,7 +1,6 @@
 #pragma once
 
 #include <utility>
-#include <supermarx/product.hpp>
 
 #include <boost/fusion/include/adapt_struct.hpp>
 
