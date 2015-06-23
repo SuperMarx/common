@@ -56,7 +56,7 @@ void client::promote(std::string const& username, std::string const& password)
 	token const passphrase_salted(hash(password, st.salt));
 	token const passphrase_hashed(hash(passphrase_salted, st.nonce));
 
-	d->feed(dl.post(basepath + "/login/" + boost::lexical_cast<std::string>(st.id) + formatstr, {{"password_hashed", to_string(passphrase_hashed)}}));
+	d->feed(dl.post(basepath + "/login/" + boost::lexical_cast<std::string>(st.id.unseal()) + formatstr, {{"password_hashed", to_string(passphrase_hashed)}}));
 
 	stok.reset(deserialize<sessiontoken>(d, "sessiontoken"));
 }

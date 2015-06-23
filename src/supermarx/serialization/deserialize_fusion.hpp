@@ -101,6 +101,15 @@ struct deserialize_value<boost::optional<T>>
 	}
 };
 
+template<typename T>
+struct deserialize_value<reference<T>>
+{
+	static inline reference<T> exec(const std::unique_ptr<deserializer>& s, const std::string name)
+	{
+		return reference<T>(deserialize_value<id_t>::exec(s, name));
+	}
+};
+
 template<>
 struct deserialize_value<measure>
 {

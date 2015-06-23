@@ -84,6 +84,15 @@ struct serialize_value<boost::optional<T>>
 	}
 };
 
+template<typename T>
+struct serialize_value<reference<T>>
+{
+	static inline void exec(const std::unique_ptr<serializer>& s, const std::string name, const reference<T>& x)
+	{
+		serialize_value<id_t>::exec(s, name, x.unseal());
+	}
+};
+
 template<>
 struct serialize_value<measure>
 {

@@ -2,6 +2,8 @@
 
 #include <string>
 #include <supermarx/datetime.hpp>
+#include <supermarx/measure.hpp>
+#include <supermarx/confidence.hpp>
 
 #include <supermarx/api/tag.hpp>
 
@@ -9,14 +11,6 @@
 
 namespace supermarx
 {
-
-enum class measure
-{
-    UNITS,
-    MILLILITERS,
-    MILLIGRAMS,
-    MILLIMETERS
-};
 
 struct product
 {
@@ -32,72 +26,6 @@ struct product
 
 	datetime valid_on;
 };
-
-enum class confidence
-{
-	LOW,
-	NEUTRAL,
-	HIGH,
-	PERFECT
-};
-
-inline std::string to_string(measure m)
-{
-	switch(m)
-	{
-	case measure::UNITS:
-		return "UNITS";
-	case measure::MILLILITERS:
-		return "MILLILITERS";
-	case measure::MILLIGRAMS:
-		return "MILLIGRAMS";
-	case measure::MILLIMETERS:
-		return "MILLIMETERS";
-	}
-}
-
-inline std::string to_string(confidence conf)
-{
-	switch(conf)
-	{
-	case confidence::LOW:
-		return "LOW";
-	case confidence::NEUTRAL:
-		return "NEUTRAL";
-	case confidence::HIGH:
-		return "HIGH";
-	case confidence::PERFECT:
-		return "PERFECT";
-	}
-}
-
-inline measure to_measure(std::string const& str)
-{
-	if(str == "UNITS")
-		return measure::UNITS;
-	else if(str == "MILLILITERS")
-		return measure::MILLILITERS;
-	else if(str == "MILLIGRAMS")
-		return measure::MILLIGRAMS;
-	else if(str == "MILLIMETERS")
-		return measure::MILLIMETERS;
-
-	throw std::runtime_error("Could not parse measure");
-}
-
-inline confidence to_confidence(std::string const& str)
-{
-	if(str == "LOW")
-		return confidence::LOW;
-	else if(str == "NEUTRAL")
-		return confidence::NEUTRAL;
-	else if(str == "HIGH")
-		return confidence::HIGH;
-	else if(str == "PERFECT")
-		return confidence::PERFECT;
-
-	throw std::runtime_error("Could not parse confidence");
-}
 
 }
 
