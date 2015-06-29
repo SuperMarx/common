@@ -35,7 +35,7 @@ private:
 		boost::program_options::options_description o_general("General options");
 		o_general.add_options()
 				("help,h", "display this message")
-				("api,a", boost::program_options::value(&opt.api_host), "api host to send results to")
+				("api,a", boost::program_options::value(&opt.api_host), "api host (default: api.supermarx.nl)")
 				("cache,c", "caches assets downloaded from supermarket servers, useful when debugging")
 				("config,C", boost::program_options::value(&opt.config), "path to the configfile (default: ./config.yaml)")
 				("dry-run,d", "does not send products to api when set")
