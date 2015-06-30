@@ -30,6 +30,8 @@ private:
 
 	boost::optional<message::sessiontoken> stok;
 
+	std::string handle_response(downloader::response const& r) const;
+
 public:
 	client(std::string const& agent);
 	client(std::string const& basepath, std::string const& agent);
