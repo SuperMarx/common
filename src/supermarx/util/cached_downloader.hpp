@@ -30,7 +30,7 @@ public:
 		, cache_path(_cache_path)
 	{}
 
-	std::string fetch(std::string const& url)
+	downloader::response fetch(std::string const& url)
 	{
 		std::string mangled_url = mangle_url(url);
 
@@ -45,14 +45,18 @@ public:
 		if(boost::filesystem::exists(p))
 		{
 			std::ifstream fin(p.generic_string(), std::ios::binary);
-			return std::string(std::istreambuf_iterator<char>(fin), std::istreambuf_iterator<char>());
+			return {200, std::string(std::istreambuf_iterator<char>(fin), std::istreambuf_iterator<char>())};
 		}
 
-		std::string buf(dl.fetch(url));
-		std::ofstream fout(p.generic_string(), std::ios::binary);
-		fout << buf;
+		downloader::response response(dl.fetch(url));
 
-		return buf;
+		if(response.code != 200)
+			throw downloader::error(std::string("Received HTTP code ") + boost::lexical_cast<std::string>(response.code));
+
+		std::ofstream fout(p.generic_string(), std::ios::binary);
+		fout << response.body;
+
+		return {200, response.body}; // HTTP OK
 	}
 };
 

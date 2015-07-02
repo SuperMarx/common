@@ -67,7 +67,7 @@ void downloader::await_ratelimit()
 	}
 }
 
-std::string downloader::fetch(const std::string& url)
+downloader::response downloader::fetch(const std::string& url)
 {
 	await_ratelimit();
 	guard g([&](){ last_request = timer(); });
@@ -81,10 +81,13 @@ std::string downloader::fetch(const std::string& url)
 	if(CURLE_OK != curl_easy_perform(handle.get()))
 		throw downloader::error(error_msg.get());
 
-	return result;
+	long http_code = 0;
+	curl_easy_getinfo(handle.get(), CURLINFO_RESPONSE_CODE, &http_code);
+
+	return {http_code, result};
 }
 
-std::string downloader::post(const std::string& url, const downloader::formmap& form)
+downloader::response downloader::post(const std::string& url, const downloader::formmap& form)
 {
 	await_ratelimit();
 	guard g([&](){ last_request = timer(); });
@@ -123,9 +126,12 @@ std::string downloader::post(const std::string& url, const downloader::formmap& 
 	if(CURLE_OK != curl_easy_perform(handle.get()))
 		throw downloader::error(error_msg.get());
 
+	long http_code = 0;
+	curl_easy_getinfo(handle.get(), CURLINFO_RESPONSE_CODE, &http_code);
+
 	curl_slist_free_all(headerlist);
 
-	return result;
+	return {http_code, result};
 }
 
 void downloader::set_referer(const std::string& r)

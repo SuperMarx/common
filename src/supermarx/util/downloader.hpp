@@ -18,6 +18,12 @@ public:
 	typedef std::map<std::string, std::string> formmap;
 	typedef std::unique_ptr<CURL, std::function<void(CURL*)>> curl_ptr;
 
+	struct response
+	{
+		long code;
+		std::string body;
+	};
+
 	class error : public std::runtime_error
 	{
 	public:
@@ -37,8 +43,8 @@ private:
 public:
 	downloader(const std::string& agent, unsigned int ratelimit = 0);
 
-	std::string fetch(const std::string& url);
-	std::string post(const std::string& url, const formmap& form);
+	response fetch(const std::string& url);
+	response post(const std::string& url, const formmap& form);
 
 	void set_cookies(const std::string& cookies);
 	void set_referer(const std::string& referer);
