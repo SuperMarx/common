@@ -225,7 +225,7 @@ public:
 				for(message::tag const& t : tags)
 					api.bind_tag(supermarket_id, product.identifier, t);
 			}
-		}, opt.ratelimit, opt.cache);
+		}, opt.ratelimit, opt.cache, opt.register_tags);
 
 		s.scrape();
 
