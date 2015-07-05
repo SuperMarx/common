@@ -140,83 +140,90 @@ public:
 			std::string const& source_uri,
 			boost::optional<std::string> const& image_uri_opt,
 			message::product_base const& product,
+			std::vector<message::tag> const& tags,
 			datetime retrieved_on,
 			confidence c,
 			std::vector<std::string> problems
 		) {
-			if(identifiers.find(product.identifier) != identifiers.end())
-				return; // Do not commit previously seen products
-
-			identifiers.emplace(product.identifier);
-
-			if(!opt.silent)
+			if(identifiers.find(product.identifier) == identifiers.end()) // Only commit previously unseen products
 			{
-				std::cerr << "Product '" << product.name << "' [" << product.identifier << "] ";
+				identifiers.emplace(product.identifier);
 
-				if(product.price == product.orig_price)
-					std::cerr << product.price/100.0f << " EUR";
-				else
-					std::cerr << product.orig_price/100.0f << " EUR -> " << product.price/100.0f << " EUR";
-
-				if(product.discount_amount > 1)
-					std::cerr << " (at " << product.discount_amount << ')';
-
-				std::cerr << std::endl;
-			}
-
-			if(!opt.dry_run)
-			{
-				message::add_product ap({product, retrieved_on, c, problems});
-				api.add_product(supermarket_id, ap);
-			}
-
-			if(opt.extract_images && image_uri_opt)
-			{
-				bool permission = false;
-				if(opt.dry_run)
-					permission = true;
-				else
+				if(!opt.silent)
 				{
-					supermarx::message::product_summary ps(api.get_product(supermarket_id, product.identifier));
-					if(!ps.imagecitation_id)
-						permission = true;
+					std::cerr << "Product '" << product.name << "' [" << product.identifier << "] ";
+
+					if(product.price == product.orig_price)
+						std::cerr << product.price/100.0f << " EUR";
+					else
+						std::cerr << product.orig_price/100.0f << " EUR -> " << product.price/100.0f << " EUR";
+
+					if(product.discount_amount > 1)
+						std::cerr << " (at " << product.discount_amount << ')';
+
+					std::cerr << std::endl;
 				}
 
-				if(permission && images_downloaded < opt.extract_images_limit)
+				if(!opt.dry_run)
 				{
-					supermarx::raw img;
+					message::add_product ap({product, retrieved_on, c, problems});
+					api.add_product(supermarket_id, ap);
+				}
 
-					try
+				if(opt.extract_images && image_uri_opt)
+				{
+					bool permission = false;
+					if(opt.dry_run)
+						permission = true;
+					else
 					{
-						supermarx::raw img_tmp(s.download_image(*image_uri_opt));
-						img.swap(img_tmp);
-					} catch(std::runtime_error const& e)
-					{
-						std::cerr << "Catched error whilst fetching image for " << product.identifier << " " << *image_uri_opt << std::endl;
-						std::cerr << e.what() << std::endl;
+						supermarx::message::product_summary ps(api.get_product(supermarket_id, product.identifier));
+						if(!ps.imagecitation_id)
+							permission = true;
 					}
 
-					if(!opt.dry_run && img.length() > 0)
+					if(permission && images_downloaded < opt.extract_images_limit)
 					{
+						supermarx::raw img;
+
 						try
 						{
-						api.add_product_image_citation(
-							supermarket_id,
-							product.identifier,
-							*image_uri_opt,
-							source_uri,
-							datetime_now(),
-							std::move(img)
-						);
+							supermarx::raw img_tmp(s.download_image(*image_uri_opt));
+							img.swap(img_tmp);
 						} catch(std::runtime_error const& e)
 						{
-							std::cerr << "Catched error whilst pushing image for " << product.identifier << " " << *image_uri_opt << std::endl;
+							std::cerr << "Catched error whilst fetching image for " << product.identifier << " " << *image_uri_opt << std::endl;
 							std::cerr << e.what() << std::endl;
 						}
-					}
 
-					images_downloaded++;
+						if(!opt.dry_run && img.length() > 0)
+						{
+							try
+							{
+							api.add_product_image_citation(
+								supermarket_id,
+								product.identifier,
+								*image_uri_opt,
+								source_uri,
+								datetime_now(),
+								std::move(img)
+							);
+							} catch(std::runtime_error const& e)
+							{
+								std::cerr << "Catched error whilst pushing image for " << product.identifier << " " << *image_uri_opt << std::endl;
+								std::cerr << e.what() << std::endl;
+							}
+						}
+
+						images_downloaded++;
+					}
 				}
+			}
+
+			if(!opt.dry_run && opt.register_tags)
+			{
+				for(message::tag const& t : tags)
+					api.bind_tag(supermarket_id, product.identifier, t);
 			}
 		}, opt.ratelimit, opt.cache);
 

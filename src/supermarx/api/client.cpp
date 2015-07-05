@@ -104,6 +104,28 @@ void client::add_product(id_t supermarket_id, message::add_product const& ap)
 	throw std::runtime_error("Did not receive valid response");
 }
 
+void client::bind_tag(reference<data::supermarket> supermarket_id, std::string const& product_identifier, message::tag const& tag)
+{
+	std::string response = handle_response(post(s, dl, basepath + "/bind_tag/" + boost::lexical_cast<std::string>(supermarket_id) + "/" + product_identifier + formatstr, "tag", tag, stok));
+	try
+	{
+		d->feed(response);
+		std::string result;
+		d->read_object("response");
+		d->read("status", result);
+
+		if(result == "done")
+			return;
+	}
+	catch( ... )
+	{
+		d.reset(new msgpack_deserializer()); // State uncertain; flush
+	}
+
+	std::cerr << response << std::endl;
+	throw std::runtime_error("Did not receive valid response");
+}
+
 void client::add_product_image_citation(id_t supermarket_id, std::string const& product_identifier, std::string const& original_uri, std::string const& source_uri, const datetime &retrieved_on, raw &&image)
 {
 	message::add_product_image_citation request({
