@@ -1,5 +1,7 @@
 #include <supermarx/api/client.hpp>
 
+#include <iostream>
+
 #include <supermarx/api/exception.hpp>
 #include <supermarx/api/session_operations.hpp>
 
