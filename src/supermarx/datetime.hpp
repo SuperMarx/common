@@ -77,14 +77,14 @@ namespace supermarx
 		boost::smatch match;
 		if(boost::regex_match(str, match, full_regex))
 			return time(
-				boost::lexical_cast<long>(match[1]),
-				boost::lexical_cast<long>(match[2]),
-				boost::lexical_cast<long>(match[3])
+				std::stol(match[1]),
+				std::stol(match[2]),
+				std::stol(match[3])
 			);
 		else if(boost::regex_match(str, match, short_regex))
 			return time(
-				boost::lexical_cast<long>(match[1]),
-				boost::lexical_cast<long>(match[2]),
+				std::stol(match[1]),
+				std::stol(match[2]),
 				0
 			);
 
@@ -98,9 +98,9 @@ namespace supermarx
 		boost::smatch match;
 		if(boost::regex_match(str, match, int_regex))
 			return date(
-				boost::lexical_cast<uint32_t>(match[1]),
-				boost::lexical_cast<uint32_t>(match[2]),
-				boost::lexical_cast<uint32_t>(match[3])
+				std::stoul(match[1]),
+				std::stoul(match[2]),
+				std::stoul(match[3])
 			);
 
 		throw std::runtime_error("Can not parse date-string");
@@ -108,12 +108,20 @@ namespace supermarx
 
 	inline datetime to_datetime(std::string const& str)
 	{
-		const static boost::regex int_regex("([0-9]{4}-[0-9]{2}-[0-9]{2})[T| ]([0-9]{2}:[0-9]{2}:[0-9]{2})");
+		const static boost::regex int_regex("([0-9]{4})-([0-9]{2})-([0-9]{2})[T| ]([0-9]{2}):([0-9]{2}):([0-9]{2})");
 		boost::smatch match;
 		if(boost::regex_match(str, match, int_regex))
 			return datetime(
-				to_date(match[1]),
-				to_time(match[2])
+				date(
+					std::stoul(match[1]),
+					std::stoul(match[2]),
+					std::stoul(match[3])
+				),
+				time(
+					std::stol(match[4]),
+					std::stol(match[5]),
+					std::stol(match[6])
+				)
 			);
 
 		throw std::runtime_error("Can not parse datetime-string");
