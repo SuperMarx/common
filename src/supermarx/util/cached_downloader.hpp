@@ -6,6 +6,8 @@
 #include <boost/filesystem.hpp>
 #include <supermarx/util/downloader.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 namespace supermarx
 {
 

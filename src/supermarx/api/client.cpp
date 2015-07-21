@@ -1,6 +1,7 @@
 #include <supermarx/api/client.hpp>
 
 #include <iostream>
+#include <boost/lexical_cast.hpp>
 
 #include <supermarx/api/exception.hpp>
 #include <supermarx/api/session_operations.hpp>
