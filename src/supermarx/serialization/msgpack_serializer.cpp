@@ -84,7 +84,7 @@ void msgpack_serializer::write(const std::string &key, const token &x)
 {
 	add_node(type_t::non_container, key, 0);
 	pk.pack_bin(x.size());
-	pk.pack_bin_body((const char*)x.data(), x.size());
+	pk.pack_bin_body(reinterpret_cast<const char*>(x.data()), x.size());
 }
 
 void msgpack_serializer::dump(std::function<void(const char*, size_t)> f)

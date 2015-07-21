@@ -17,8 +17,8 @@ static size_t downloader_write_callback(void *contents, size_t size, size_t nmem
 {
 	size_t realsize = size * nmemb;
 
-	std::string *mem = (std::string *)userp;
-	mem->append((char *)contents, realsize);
+	std::string *mem = static_cast<std::string*>(userp);
+	mem->append(static_cast<char*>(contents), realsize);
 
 	return realsize;
 }
@@ -76,7 +76,7 @@ downloader::response downloader::fetch(const std::string& url)
 	curl_ptr handle(create_handle());
 
 	curl_easy_setopt(handle.get(), CURLOPT_URL, url.c_str());
-	curl_easy_setopt(handle.get(), CURLOPT_WRITEDATA, (void *)&result);
+	curl_easy_setopt(handle.get(), CURLOPT_WRITEDATA, static_cast<void*>(&result));
 
 	if(CURLE_OK != curl_easy_perform(handle.get()))
 		throw downloader::error(error_msg.get());
@@ -121,7 +121,7 @@ downloader::response downloader::post(const std::string& url, const downloader::
 
 	curl_easy_setopt(handle.get(), CURLOPT_URL, url.c_str());
 	curl_easy_setopt(handle.get(), CURLOPT_POSTFIELDS, formdata.c_str());
-	curl_easy_setopt(handle.get(), CURLOPT_WRITEDATA, (void *)&result);
+	curl_easy_setopt(handle.get(), CURLOPT_WRITEDATA, static_cast<void*>(&result));
 
 	if(CURLE_OK != curl_easy_perform(handle.get()))
 		throw downloader::error(error_msg.get());

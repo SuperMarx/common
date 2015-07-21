@@ -46,7 +46,7 @@ void msgpack_compact_serializer::write(const std::string& /*key*/, const raw& x)
 void msgpack_compact_serializer::write(const std::string& /*key*/, const token &x)
 {
 	pk.pack_bin(x.size());
-	pk.pack_bin_body((const char*)x.data(), x.size());
+	pk.pack_bin_body(reinterpret_cast<const char*>(x.data()), x.size());
 }
 
 void msgpack_compact_serializer::dump(std::function<void(const char*, size_t)> f)
