@@ -20,6 +20,19 @@ namespace detail
 			return 1;
 	}
 
+	template<>
+	inline size_t numlength<long, 4>(const long x)
+	{
+		if(x > 999)
+			return 4;
+		else if(x > 99)
+			return 3;
+		else if(x > 9)
+			return 2;
+		else
+			return 1;
+	}
+
 	template<typename T, size_t LENGTH>
 	inline void write_int_to_cstr(char* str, T x)
 	{
