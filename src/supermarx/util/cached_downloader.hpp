@@ -34,7 +34,6 @@ class cached_downloader
 			crc.process_bytes(url.c_str(), url.size());
 			result.erase(result.begin()+max_length-9, result.end());
 			result += "-" + base16::conv<uint32_t>(crc.checksum());
-			std::cerr << result << std::endl;
 		}
 
 		return result;
