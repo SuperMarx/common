@@ -4,9 +4,12 @@
 
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
+
 #include <supermarx/util/downloader.hpp>
+#include <supermarx/util/base16.hpp>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/crc.hpp>
 
 namespace supermarx
 {
@@ -18,10 +21,21 @@ class cached_downloader
 
 	std::string mangle_url(std::string const& url)
 	{
+		static constexpr size_t max_length = 128;
+
 		std::string result = url;
 
 		for(char c : {'/', ':', '?', ','})
 			std::replace(result.begin(), result.end(), c, '-');
+
+		if(result.size() > max_length)
+		{
+			boost::crc_32_type crc;
+			crc.process_bytes(url.c_str(), url.size());
+			result.erase(result.begin()+max_length-9, result.end());
+			result += "-" + base16::conv<uint32_t>(crc.checksum());
+			std::cerr << result << std::endl;
+		}
 
 		return result;
 	}
