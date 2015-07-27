@@ -135,6 +135,7 @@ public:
 
 		size_t images_downloaded = 0;
 		std::set<std::string> identifiers;
+		std::map<std::string, std::set<message::tag>> committed_tags;
 
 		SCRAPER s([&](
 			std::string const& source_uri,
@@ -145,9 +146,9 @@ public:
 			confidence c,
 			std::vector<std::string> problems
 		) {
-			if(identifiers.find(product.identifier) == identifiers.end()) // Only commit previously unseen products
+			if(identifiers.emplace(product.identifier).second) // Only commit previously unseen products
 			{
-				identifiers.emplace(product.identifier);
+				committed_tags.emplace(product.identifier, std::set<message::tag>());
 
 				if(!opt.silent)
 				{
@@ -223,7 +224,10 @@ public:
 			if(!opt.dry_run && opt.register_tags)
 			{
 				for(message::tag const& t : tags)
-					api.bind_tag(supermarket_id, product.identifier, t);
+				{
+					if(committed_tags[product.identifier].emplace(t).second)
+						api.bind_tag(supermarket_id, product.identifier, t);
+				}
 			}
 		}, opt.ratelimit, opt.cache, opt.register_tags);
 

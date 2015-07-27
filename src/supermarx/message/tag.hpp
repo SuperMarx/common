@@ -14,6 +14,11 @@ struct tag
 {
 	std::string name;
 	boost::optional<std::string> category;
+
+	bool operator<(tag const& rhs) const
+	{
+		return name < rhs.name || category < rhs.category;
+	}
 };
 
 }
