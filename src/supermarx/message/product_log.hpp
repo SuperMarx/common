@@ -17,6 +17,7 @@ struct product_log
 	std::string name;
 
 	std::vector<std::string> messages;
+	datetime retrieved_on;
 };
 
 }
@@ -27,4 +28,5 @@ BOOST_FUSION_ADAPT_STRUCT(
 		(std::string, identifier)
 		(std::string, name)
 		(std::vector<std::string>, messages)
+		(supermarx::datetime, retrieved_on)
 )
