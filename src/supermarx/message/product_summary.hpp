@@ -68,5 +68,5 @@ BOOST_FUSION_ADAPT_STRUCT(
 			(uint64_t, price)
 			(uint64_t, discount_amount)
 			(supermarx::datetime, valid_on)
-			(boost::optional<supermarx::id_t>, imagecitation_id)
+			(boost::optional<supermarx::reference<supermarx::data::imagecitation>>, imagecitation_id)
 )
