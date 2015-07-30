@@ -47,8 +47,6 @@ public:
 
 	downloader::response fetch(std::string const& url)
 	{
-		std::string mangled_url = mangle_url(url);
-
 		if(!cache_path)
 			return dl.fetch(url);
 
@@ -56,6 +54,7 @@ public:
 		if(!boost::filesystem::is_directory(p))
 			throw std::runtime_error("Cache path does not exist");
 
+		std::string mangled_url = mangle_url(url);
 		p /= mangled_url;
 		if(boost::filesystem::exists(p))
 		{
@@ -72,6 +71,24 @@ public:
 		fout << response.body;
 
 		return {200, response.body}; // HTTP OK
+	}
+
+	// Remove cached url in case for example an invalid response was returned
+	void clear(std::string const& url)
+	{
+		if(!cache_path)
+			return;
+
+		boost::filesystem::path p(*cache_path);
+		if(!boost::filesystem::is_directory(p))
+			throw std::runtime_error("Cache path does not exist");
+
+		std::string mangled_url = mangle_url(url);
+		p /= mangled_url;
+		if(!boost::filesystem::exists(p))
+			return;
+
+		boost::filesystem::remove(p);
 	}
 };
 
