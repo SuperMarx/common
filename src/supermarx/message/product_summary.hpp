@@ -35,7 +35,7 @@ struct product_summary
 
 	datetime valid_on;
 
-	boost::optional<id_t> imagecitation_id;
+	boost::optional<reference<data::imagecitation>> imagecitation_id;
 
 	static product_summary merge(data::product const& p, data::productdetails const& pd)
 	{
@@ -48,7 +48,8 @@ struct product_summary
 			pd.orig_price,
 			pd.price,
 			pd.discount_amount,
-			pd.valid_on
+			pd.valid_on,
+			p.imagecitation_id
 		});
 	}
 };
