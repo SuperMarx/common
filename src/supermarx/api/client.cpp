@@ -40,15 +40,24 @@ downloader::response post(client::serializer_ptr const& s, downloader& dl, std::
 }
 
 
-std::string client::handle_response(const downloader::response &r) const
+std::string client::handle_response(const downloader::response &r)
 {
 	if(r.code == 200) // HTTP OK
 		return r.body;
 
-	d->feed(r.body);
-	auto e(deserialize<message::exception>(d, "exception"));
+	try
+	{
+		d->feed(r.body);
+		auto e(deserialize<message::exception>(d, "exception"));
+		throw static_cast<api::exception>(e.code);
+	}
+	catch(supermarx::deserializer::type_error)
+	{
+		d.reset(new msgpack_deserializer()); // State uncertain; flush
 
-	throw static_cast<api::exception>(e.code);
+		std::cerr << r.body << std::endl;
+		throw std::runtime_error(std::string("Received HTTP code ") + boost::lexical_cast<std::string>(r.code) + ", was not an exception.");
+	}
 }
 
 client::client(std::string const& _agent)
@@ -79,9 +88,18 @@ void client::promote(std::string const& username, std::string const& password)
 
 message::product_summary client::get_product(id_t supermarket_id, const std::string &product_identifier)
 {
-	d->feed(handle_response(dl.fetch(basepath + "/get_product/" + boost::lexical_cast<std::string>(supermarket_id) + "/" + product_identifier + formatstr)));
-	auto result(deserialize<message::product_summary>(d, "product_summary"));
-	return result;
+	try
+	{
+		d->feed(handle_response(dl.fetch(basepath + "/get_product/" + boost::lexical_cast<std::string>(supermarket_id) + "/" + product_identifier + formatstr)));
+		auto result(deserialize<message::product_summary>(d, "product_summary"));
+		return result;
+	}
+	catch( ... )
+	{
+		d.reset(new msgpack_deserializer()); // State uncertain; flush
+	}
+
+	throw std::runtime_error("Did not receive valid response");
 }
 
 void client::add_product(id_t supermarket_id, message::add_product const& ap)
