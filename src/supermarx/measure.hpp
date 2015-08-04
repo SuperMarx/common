@@ -8,9 +8,9 @@ namespace supermarx
 enum class measure
 {
 	UNITS,
-	MILLILITERS,
+	MILLILITRES,
 	MILLIGRAMS,
-	MILLIMETERS
+	MILLIMETRES
 };
 
 inline std::string to_string(measure m)
@@ -19,12 +19,12 @@ inline std::string to_string(measure m)
 	{
 	case measure::UNITS:
 		return "UNITS";
-	case measure::MILLILITERS:
-		return "MILLILITERS";
+	case measure::MILLILITRES:
+		return "MILLILITRES";
 	case measure::MILLIGRAMS:
 		return "MILLIGRAMS";
-	case measure::MILLIMETERS:
-		return "MILLIMETERS";
+	case measure::MILLIMETRES:
+		return "MILLIMETRES";
 	}
 }
 
@@ -32,12 +32,12 @@ inline measure to_measure(std::string const& str)
 {
 	if(str == "UNITS")
 		return measure::UNITS;
-	else if(str == "MILLILITERS")
-		return measure::MILLILITERS;
+	else if(str == "MILLILITRES")
+		return measure::MILLILITRES;
 	else if(str == "MILLIGRAMS")
 		return measure::MILLIGRAMS;
-	else if(str == "MILLIMETERS")
-		return measure::MILLIMETERS;
+	else if(str == "MILLIMETRES")
+		return measure::MILLIMETRES;
 
 	throw std::runtime_error("Could not parse measure");
 }
