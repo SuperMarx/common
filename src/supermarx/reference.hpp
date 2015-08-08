@@ -20,6 +20,16 @@ public:
 	{
 		return id;
 	}
+
+	bool operator==(reference<T> const& rhs) const
+	{
+		return id == rhs.id;
+	}
+
+	bool operator<(reference<T> const& rhs) const
+	{
+		return id < rhs.id;
+	}
 };
 
 template<typename T>
