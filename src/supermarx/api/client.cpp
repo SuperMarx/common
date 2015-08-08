@@ -3,6 +3,8 @@
 #include <iostream>
 #include <boost/lexical_cast.hpp>
 
+#include <supermarx/qualified.hpp>
+
 #include <supermarx/api/exception.hpp>
 #include <supermarx/api/session_operations.hpp>
 

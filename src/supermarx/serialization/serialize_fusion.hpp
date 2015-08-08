@@ -93,6 +93,17 @@ struct serialize_value<reference<T>>
 	}
 };
 
+template<typename T>
+struct serialize_value<qualified<T>>
+{
+	static inline void exec(const std::unique_ptr<serializer>& s, const std::string name, const qualified<T>& x)
+	{
+		s->write_object(name, boost::fusion::result_of::size<T>::value+1);
+		serialize_value<reference<T>>::exec(s, "id", x.id);
+		detail::serialize_itr<T, boost::mpl::int_<0>>::exec(s, x.data);
+	}
+};
+
 template<>
 struct serialize_value<measure>
 {
