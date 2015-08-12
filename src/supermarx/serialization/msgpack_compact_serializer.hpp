@@ -14,6 +14,7 @@ public:
 
 	virtual void write_array(const std::string& name, const size_t n);
 	virtual void write_object(const std::string& name, const size_t n);
+	virtual void write_null(const std::string& name);
 
 	virtual void write(const std::string& key, const uint64_t x);
 	virtual void write(const std::string& key, const std::string& x);

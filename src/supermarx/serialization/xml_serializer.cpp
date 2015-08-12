@@ -55,6 +55,13 @@ void xml_serializer::write_object(const std::string& name, const size_t n)
 	write_array(name, n); //Identical
 }
 
+void xml_serializer::write_null(const std::string& name)
+{
+	tinyxml2::XMLNode *node = doc.NewElement(name.c_str());
+	add_node(node);
+	stack.emplace(node, 0);
+}
+
 void xml_serializer::write(const std::string& key, const uint64_t x)
 {
 	write(key, boost::lexical_cast<std::string>(x));

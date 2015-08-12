@@ -61,6 +61,12 @@ void msgpack_serializer::write_object(const std::string& name, const size_t n)
 	pk.pack_map(n);
 }
 
+void msgpack_serializer::write_null(const std::string& name)
+{
+	add_node(type_t::non_container, name, 0);
+	pk.pack_nil();
+}
+
 void msgpack_serializer::write(const std::string& key, const uint64_t x)
 {
 	add_node(type_t::non_container, key, 0);

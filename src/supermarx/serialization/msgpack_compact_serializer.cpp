@@ -27,6 +27,11 @@ void msgpack_compact_serializer::write_object(const std::string& /*name*/, const
 	pk.pack_array(n);
 }
 
+void msgpack_compact_serializer::write_null(const std::string& /*name*/)
+{
+	pk.pack_nil();
+}
+
 void msgpack_compact_serializer::write(const std::string& /*key*/, const uint64_t x)
 {
 	pk.pack_uint64(x);

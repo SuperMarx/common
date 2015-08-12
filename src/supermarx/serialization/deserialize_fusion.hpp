@@ -91,13 +91,14 @@ struct deserialize_value<boost::optional<T>>
 {
 	static inline boost::optional<T> exec(const std::unique_ptr<deserializer>& s, const std::string name)
 	{
-		const std::string opt_name = "opt_" + name;
-		const std::size_t size = s->read_object(opt_name);
-
-		if(size == 0)
+		try
+		{
+			s->read_null(name);
 			return boost::none;
-		else
+		} catch(deserializer::type_error)
+		{
 			return deserialize_value<T>::exec(s, name);
+		}
 	}
 };
 

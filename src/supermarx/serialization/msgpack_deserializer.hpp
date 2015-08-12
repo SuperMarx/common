@@ -16,6 +16,7 @@ public:
 
 	virtual size_t read_array(const std::string& name);
 	virtual size_t read_object(const std::string& name);
+	virtual void read_null(const std::string& name);
 
 	virtual void read(const std::string& key, uint64_t& x);
 	virtual void read(const std::string& key, std::string& x);

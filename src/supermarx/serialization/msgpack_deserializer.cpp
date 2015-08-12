@@ -136,6 +136,15 @@ size_t msgpack_deserializer::read_object(const std::string& name)
 	return obj.via.map.size;
 }
 
+void msgpack_deserializer::read_null(const std::string& name)
+{
+	read_key(name);
+
+	const msgpack::object& obj = read();
+	if(obj.type != msgpack::type::NIL)
+		throw type_error(convert_msgpack_type(msgpack::type::NIL), convert_msgpack_type(obj.type));
+}
+
 void msgpack_deserializer::read(const std::string& key, uint64_t& x)
 {
 	read_key(key);

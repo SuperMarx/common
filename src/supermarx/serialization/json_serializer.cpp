@@ -62,6 +62,11 @@ void json_serializer::write_object(const std::string& name, const size_t n)
 	add_node(name, n, Json::Value(Json::objectValue));
 }
 
+void json_serializer::write_null(const std::string& name)
+{
+	add_node(name, 0, Json::nullValue);
+}
+
 void json_serializer::write(const std::string& key, const uint64_t x)
 {
 	add_node(key, 0, Json::Value(static_cast<Json::UInt64>(x)));

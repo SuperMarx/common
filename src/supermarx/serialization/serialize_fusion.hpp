@@ -72,15 +72,12 @@ struct serialize_value<boost::optional<T>>
 {
 	static inline void exec(const std::unique_ptr<serializer>& s, const std::string name, const boost::optional<T>& x)
 	{
-		const std::string opt_name = "opt_" + name;
-
 		if(x)
 		{
-			s->write_object(opt_name, 1);
 			serialize_value<T>::exec(s, name, x.get());
 		}
 		else
-			s->write_object(opt_name, 0);
+			s->write_null(name);
 	}
 };
 
