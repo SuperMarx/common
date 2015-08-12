@@ -23,6 +23,8 @@ namespace message
 struct product_summary
 {
 	std::string identifier; // Internal reference as used by scrapers
+	reference<data::supermarket> supermarket_id;
+
 	std::string name;
 
 	reference<data::productclass> productclass_id;
@@ -48,6 +50,7 @@ struct product_summary
 BOOST_FUSION_ADAPT_STRUCT(
 			supermarx::message::product_summary,
 			(std::string, identifier)
+			(supermarx::reference<supermarx::data::supermarket>, supermarket_id)
 			(std::string, name)
 			(supermarx::reference<supermarx::data::productclass>, productclass_id)
 			(uint64_t, volume)
