@@ -135,6 +135,7 @@ public:
 
 		size_t images_downloaded = 0;
 		std::set<std::string> identifiers;
+		std::map<message::tag, reference<data::tag>> tag_ids;
 		std::map<std::string, std::set<message::tag>> committed_tags;
 
 		SCRAPER s([&](
@@ -226,7 +227,23 @@ public:
 				for(message::tag const& t : tags)
 				{
 					if(committed_tags[product.identifier].emplace(t).second)
-						api.bind_tag(supermarket_id, product.identifier, t);
+					{
+						auto it(tag_ids.find(t));
+
+						reference<data::tag> tag_id = [&]()
+						{
+							if(it == tag_ids.end())
+							{
+								auto tag_id = api.find_add_tag(t);
+								tag_ids.emplace(t, tag_id);
+								return tag_id;
+							}
+							else
+								return it->second;
+						}();
+
+						api.bind_tag(tag_id, supermarket_id, product.identifier);
+					}
 				}
 			}
 		}, opt.ratelimit, opt.cache, opt.register_tags);

@@ -24,6 +24,14 @@ namespace api
 
 static const std::string formatstr = "?format=msgpack";
 
+downloader::response get(downloader& dl, std::string const& uri, boost::optional<message::sessiontoken> const& stok)
+{
+	if(!stok)
+		return dl.fetch(uri);
+	else
+		return dl.post(uri, {{"sessiontoken", to_string(*stok)}});
+}
+
 template<typename T>
 downloader::response post(client::serializer_ptr const& s, downloader& dl, std::string const& uri, std::string const& name, const T& x, boost::optional<message::sessiontoken> const& stok)
 {
@@ -127,9 +135,26 @@ void client::add_product(id_t supermarket_id, message::add_product const& ap)
 	throw std::runtime_error("Did not receive valid response");
 }
 
-void client::bind_tag(reference<data::supermarket> supermarket_id, std::string const& product_identifier, message::tag const& tag)
+reference<data::tag> client::find_add_tag(message::tag const& tag)
 {
-	std::string response = handle_response(post(s, dl, basepath + "/bind_tag/" + boost::lexical_cast<std::string>(supermarket_id) + "/" + product_identifier + formatstr, "tag", tag, stok));
+	std::string response = handle_response(post(s, dl, basepath + "/find_add_tag" + formatstr, "tag", tag, stok));
+	try
+	{
+		d->feed(response);
+		return deserialize<reference<data::tag>>(d, "tag_id");
+	}
+	catch( ... )
+	{
+		d.reset(new msgpack_deserializer()); // State uncertain; flush
+	}
+
+	std::cerr << response << std::endl;
+	throw std::runtime_error("Did not receive valid response");
+}
+
+void client::bind_tag(reference<data::tag> tag_id, reference<data::supermarket> supermarket_id, std::string const& product_identifier)
+{
+	std::string response = handle_response(get(dl, basepath + "/bind_tag/" + boost::lexical_cast<std::string>(tag_id) + "/" + boost::lexical_cast<std::string>(supermarket_id) + "/" + product_identifier + formatstr, stok));
 	try
 	{
 		d->feed(response);

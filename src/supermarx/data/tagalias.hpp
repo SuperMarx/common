@@ -17,6 +17,7 @@ struct tagcategory;
 struct tagalias
 {
 	reference<tag> tag_id;
+	reference<tagcategory> tagcategory_id;
 	std::string name;
 };
 
@@ -26,5 +27,6 @@ struct tagalias
 BOOST_FUSION_ADAPT_STRUCT(
 		supermarx::data::tagalias,
 		(supermarx::reference<supermarx::data::tag>, tag_id)
+		(supermarx::reference<supermarx::data::tagcategory>, tagcategory_id)
 		(std::string, name)
 )
