@@ -13,7 +13,7 @@ namespace message
 struct tag
 {
 	std::string name;
-	boost::optional<std::string> category;
+	std::string category;
 
 	bool operator<(tag const& rhs) const
 	{
@@ -27,5 +27,5 @@ struct tag
 BOOST_FUSION_ADAPT_STRUCT(
 		supermarx::message::tag,
 		(std::string, name)
-		(boost::optional<std::string>, category)
+		(std::string, category)
 )
