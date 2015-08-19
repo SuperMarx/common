@@ -49,6 +49,7 @@ public:
 
 	reference<data::tag> find_add_tag(message::tag const& tag);
 	void bind_tag(reference<data::tag> tag_id, reference<data::supermarket> supermarket_id, std::string const& product_identifier);
+	void update_tag_set_parent(reference<data::tag> tag_id, boost::optional<reference<data::tag>> parent_tag_id = boost::none);
 
 	void add_product_image_citation(id_t supermarket_id, std::string const& product_identifier, std::string const& original_uri, std::string const& source_uri, const datetime &retrieved_on, raw &&image);
 };

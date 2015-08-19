@@ -138,11 +138,24 @@ public:
 		std::map<message::tag, reference<data::tag>> tag_ids;
 		std::map<std::string, std::set<message::tag>> committed_tags;
 
+		auto find_add_tag_f([&](message::tag const& t)
+		{
+			auto it(tag_ids.find(t));
+
+			if(it == tag_ids.end())
+			{
+				auto tag_id = api.find_add_tag(t);
+				tag_ids.emplace(t, tag_id);
+				return tag_id;
+			}
+			else
+				return it->second;
+		});
+
 		SCRAPER s([&](
 			std::string const& source_uri,
 			boost::optional<std::string> const& image_uri_opt,
 			message::product_base const& product,
-			std::vector<message::tag> const& tags,
 			datetime retrieved_on,
 			confidence c,
 			std::vector<std::string> problems
@@ -221,31 +234,18 @@ public:
 					}
 				}
 			}
+		},
+		[&](message::tag const& parent_tag, message::tag const& child_tag) {
+			if(opt.dry_run)
+				return;
 
-			if(!opt.dry_run && opt.register_tags)
-			{
-				for(message::tag const& t : tags)
-				{
-					if(committed_tags[product.identifier].emplace(t).second)
-					{
-						auto it(tag_ids.find(t));
+			if(!opt.register_tags)
+				return;
 
-						reference<data::tag> tag_id = [&]()
-						{
-							if(it == tag_ids.end())
-							{
-								auto tag_id = api.find_add_tag(t);
-								tag_ids.emplace(t, tag_id);
-								return tag_id;
-							}
-							else
-								return it->second;
-						}();
+			reference<data::tag> parent_tag_id = find_add_tag_f(parent_tag);
+			reference<data::tag> child_tag_id = find_add_tag_f(child_tag);
 
-						api.bind_tag(tag_id, supermarket_id, product.identifier);
-					}
-				}
-			}
+			api.update_tag_set_parent(child_tag_id, parent_tag_id);
 		}, opt.ratelimit, opt.cache, opt.register_tags);
 
 		s.scrape();

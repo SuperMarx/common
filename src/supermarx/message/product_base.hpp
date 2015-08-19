@@ -7,6 +7,8 @@
 
 #include <boost/fusion/include/adapt_struct.hpp>
 
+#include <supermarx/message/tag.hpp>
+
 namespace supermarx
 {
 namespace message
@@ -25,6 +27,8 @@ struct product_base
 	uint64_t discount_amount;
 
 	datetime valid_on;
+
+	std::vector<message::tag> tags;
 };
 
 }
@@ -41,4 +45,6 @@ BOOST_FUSION_ADAPT_STRUCT(
 		(uint64_t, discount_amount)
 
 		(supermarx::datetime, valid_on)
+
+		(std::vector<supermarx::message::tag>, tags)
 )

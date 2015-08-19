@@ -174,6 +174,32 @@ void client::bind_tag(reference<data::tag> tag_id, reference<data::supermarket> 
 	throw std::runtime_error("Did not receive valid response");
 }
 
+void client::update_tag_set_parent(reference<data::tag> tag_id, boost::optional<reference<data::tag>> parent_tag_id)
+{
+	std::string uri = basepath + "/update_tag_set_parent/" + boost::lexical_cast<std::string>(tag_id);
+	if(parent_tag_id)
+		uri += "/" + boost::lexical_cast<std::string>(*parent_tag_id) + formatstr;
+
+	std::string response = handle_response(get(dl, uri, stok));
+	try
+	{
+		d->feed(response);
+		std::string result;
+		d->read_object("response");
+		d->read("status", result);
+
+		if(result == "done")
+			return;
+	}
+	catch( ... )
+	{
+		d.reset(new msgpack_deserializer()); // State uncertain; flush
+	}
+
+	std::cerr << response << std::endl;
+	throw std::runtime_error("Did not receive valid response");
+}
+
 void client::add_product_image_citation(id_t supermarket_id, std::string const& product_identifier, std::string const& original_uri, std::string const& source_uri, const datetime &retrieved_on, raw &&image)
 {
 	message::add_product_image_citation request({
