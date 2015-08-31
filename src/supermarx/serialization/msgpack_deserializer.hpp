@@ -10,6 +10,14 @@ namespace supermarx
 
 class msgpack_deserializer : public deserializer
 {
+private:
+	enum type_t
+	{
+		array,
+		map,
+		non_container
+	};
+
 public:
 	msgpack_deserializer();
 	virtual ~msgpack_deserializer();
@@ -26,17 +34,10 @@ public:
 	virtual void feed(const std::string& str);
 
 private:
-	const msgpack::object& read();
+	const msgpack::object& read(const msgpack::type::object_type t_expected);
 	void read_key(const std::string& key);
 
 private:
-	enum type_t
-	{
-		array,
-		map,
-		non_container
-	};
-
 	struct stack_e
 	{
 		const msgpack::object* obj_ptr;
