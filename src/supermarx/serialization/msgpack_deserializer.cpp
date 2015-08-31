@@ -1,6 +1,7 @@
 #include <supermarx/serialization/msgpack_deserializer.hpp>
 
 #include <cstring>
+#include <utility>
 
 namespace supermarx
 {
@@ -113,13 +114,16 @@ template<typename R = void, typename S, typename F>
 inline R autorollbackonfailure(S& stack, F f)
 {
 	// Protection against changes in top node; and removal (pop) of top node
+	if(stack.empty())
+		return f(); // Nothing to rollback in any case
+
 	auto const e = stack.top();
 	size_t depth = stack.size();
 
 	auto rollback_f([&]()
 	{
 		if(depth == stack.size())
-			stack.top() = e;
+			stack.top().i = e.i;
 		else if(depth == stack.size() - 1)
 			stack.emplace(e);
 		else
