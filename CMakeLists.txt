@@ -14,5 +14,6 @@ add_sane_warning_flags()
 list(APPEND SuperMarx_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/")
 
 add_subdirectory(src/supermarx)
+add_subdirectory(src/supermarx-tests)
 
 set(SuperMarx_INCLUDE_DIRS ${SuperMarx_INCLUDE_DIRS} PARENT_SCOPE)

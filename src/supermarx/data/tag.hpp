@@ -19,6 +19,7 @@ struct tag
 	reference<tagcategory> tagcategory_id;
 
 	std::string name;
+	bool canonical;
 };
 
 }
@@ -29,4 +30,5 @@ BOOST_FUSION_ADAPT_STRUCT(
 		(boost::optional<supermarx::reference<supermarx::data::tag>>, parent_id)
 		(supermarx::reference<supermarx::data::tagcategory>, tagcategory_id)
 		(std::string, name)
+		(bool, canonical)
 )
