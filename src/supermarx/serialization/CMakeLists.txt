@@ -4,8 +4,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/contrib/wubwub
 
 # We now use msgpack-c 1.01 in contrib
 # find_package(msgpack REQUIRED)
+
+# We now use rapidjson in contrib
+#find_package(rapidjson REQUIRED)
+
 find_package(tinyxml2 REQUIRED)
-find_package(jsoncpp REQUIRED)
 
 add_library(supermarx-serialization
 			serializer.cpp
@@ -29,9 +32,7 @@ list(APPEND SuperMarx_INCLUDE_DIRS ${tinyxml2_INCLUDE_DIRS})
 add_library(supermarx-serialization-json
 			json_serializer.cpp)
 
-target_link_libraries(supermarx-serialization-json supermarx-serialization ${jsoncpp_LIBRARIES})
-
-list(APPEND SuperMarx_INCLUDE_DIRS ${jsoncpp_INCLUDE_DIRS})
+list(APPEND SuperMarx_INCLUDE_DIRS ${rapidjson_INCLUDE_DIRS})
 
 include_directories(SYSTEM ${SuperMarx_INCLUDE_DIRS})
 set(SuperMarx_INCLUDE_DIRS ${SuperMarx_INCLUDE_DIRS} PARENT_SCOPE)

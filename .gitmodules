@@ -4,3 +4,6 @@
 [submodule "contrib/msgpack-c"]
 	path = contrib/msgpack-c
 	url = git@github.com:msgpack/msgpack-c
+[submodule "contrib/rapidjson"]
+	path = contrib/rapidjson
+	url = git://github.com/miloyip/rapidjson

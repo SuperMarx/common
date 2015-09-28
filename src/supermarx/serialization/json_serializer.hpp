@@ -1,10 +1,17 @@
 #pragma once
 
-#include <boost/optional.hpp>
-#include <json/json.h>
-#include <stack>
-
 #include <supermarx/serialization/serializer.hpp>
+
+#define RAPIDJSON_HAS_STDSTRING 1
+
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/memorybuffer.h>
+
+#undef RAPIDJSON_HAS_STDSTRING
+
+#include <boost/optional.hpp>
+#include <stack>
 
 namespace supermarx
 {
@@ -28,17 +35,26 @@ public:
 	virtual void clear();
 
 private:
-	void add_node(const std::string& name, size_t n, const Json::Value&& node);
+	enum type_t
+	{
+		array,
+		map,
+		non_container
+	};
 
 	struct stack_e
 	{
-		Json::Value& node;
+		type_t t;
 		size_t n, i;
 
-		stack_e(Json::Value& _node, size_t _n);
+		stack_e(type_t t, size_t n);
 	};
 
-	boost::optional<Json::Value> root;
+	void add_node(const type_t t, const std::string& name, const size_t n);
+
+	rapidjson::MemoryBuffer sb;
+	rapidjson::Writer<decltype(sb)> w;
+
 	std::stack<stack_e> stack;
 };
 

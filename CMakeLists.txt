@@ -2,8 +2,12 @@ cmake_minimum_required(VERSION 2.6)
 
 add_subdirectory(contrib/msgpack-c)
 
+# Rapidjson does not require any building, thus add_subdirectory is not necessary
+# add_subdirectory(contrib/rapidjson)
+
 project(supermarx-common)
 list(APPEND msgpack_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/contrib/msgpack-c/include")
+list(APPEND rapidjson_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/contrib/rapidjson/include")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/contrib/wubwubcmake/modules")
 
