@@ -5,19 +5,21 @@
 namespace supermarx
 {
 
+template<typename F>
 class guard
 {
 public:
-	typedef std::function<void()> f_t;
 
 private:
-	f_t _f;
+	F _f;
 
 public:
+	guard(guard&&) = default;
+
 	guard(guard&) = delete;
 	void operator=(guard&) = delete;
 
-	guard(f_t const& f)
+	guard(F const& f)
 		: _f(f)
 	{}
 
@@ -26,5 +28,11 @@ public:
 		_f();
 	}
 };
+
+template<typename F>
+guard<F> make_guard(F&& f)
+{
+	return guard<F>(std::move(f));
+}
 
 }
