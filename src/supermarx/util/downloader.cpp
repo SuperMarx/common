@@ -70,7 +70,7 @@ void downloader::await_ratelimit()
 downloader::response downloader::fetch(const std::string& url)
 {
 	await_ratelimit();
-	guard g([&](){ last_request = timer(); });
+	auto g(make_guard([&](){ last_request = timer(); }));
 
 	std::string result;
 	curl_ptr handle(create_handle());
@@ -90,7 +90,7 @@ downloader::response downloader::fetch(const std::string& url)
 downloader::response downloader::post(const std::string& url, const downloader::formmap& form)
 {
 	await_ratelimit();
-	guard g([&](){ last_request = timer(); });
+	auto g(make_guard([&](){ last_request = timer(); }));
 
 	std::string result, formdata;
 	curl_ptr handle(create_handle());
