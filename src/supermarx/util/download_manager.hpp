@@ -3,6 +3,7 @@
 #include <supermarx/util/cached_downloader.hpp>
 #include <supermarx/util/stubborn.hpp>
 
+#include <iostream>
 #include <functional>
 #include <deque>
 
