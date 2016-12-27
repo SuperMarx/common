@@ -49,6 +49,8 @@ public:
 	void set_cookies(const std::string& cookies);
 	void set_referer(const std::string& referer);
 
+	std::string escape(std::string const& str) const;
+
 	downloader(downloader&) = delete;
 	void operator=(downloader&) = delete;
 };

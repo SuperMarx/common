@@ -90,6 +90,11 @@ public:
 
 		boost::filesystem::remove(p);
 	}
+
+	std::string escape(std::string const& str) const
+	{
+		return dl.escape(str);
+	}
 };
 
 }

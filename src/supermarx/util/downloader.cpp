@@ -144,4 +144,15 @@ void downloader::set_cookies(const std::string& c)
 	cookies = c;
 }
 
+std::string downloader::escape(const std::string& str) const
+{
+	curl_ptr handle(create_handle());
+
+	char* buffer =  curl_easy_escape(handle.get(), str.c_str(), str.length());
+	std::string result(buffer);
+	curl_free(buffer);
+
+	return result;
+}
+
 }
