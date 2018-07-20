@@ -21,7 +21,6 @@ private:
 	{
 		std::string api_host;
 		bool cache;
-		std::string config;
 		bool dry_run;
 		bool extract_images;
 		size_t extract_images_limit;
@@ -37,7 +36,6 @@ private:
 				("help,h", "display this message")
 				("api,a", boost::program_options::value(&opt.api_host), "api host (default: api.supermarx.nl)")
 				("cache,c", "caches assets downloaded from supermarket servers, useful when debugging")
-				("config,C", boost::program_options::value(&opt.config), "path to the configfile (default: ./config.yaml)")
 				("dry-run,d", "does not send products to api when set")
 				("extract-images,i", "extract product images")
 				("extract-images-limit,l", boost::program_options::value(&opt.extract_images_limit), "amount of images allowed to download in one session (default: 60)")
@@ -84,10 +82,6 @@ private:
 			opt.api_host = "https://api.supermarx.nl";
 
 		opt.cache = vm.count("cache");
-
-		if(!vm.count("config"))
-			opt.config = "./config.yaml";
-
 		opt.dry_run = vm.count("dry-run");
 		opt.extract_images = vm.count("extract-images");
 
@@ -117,21 +111,18 @@ public:
 
 		supermarx::api::client api(opt.api_host, name + " (libsupermarx-api)");
 
-		if(boost::filesystem::exists(opt.config))
-		{
-			YAML::Node doc(YAML::LoadFile(opt.config));
-			YAML::Node const& scraper = doc[name];
+		char* secret_scraper_username = std::getenv("SECRET_SCRAPER_USERNAME");
+		char* secret_scraper_password = std::getenv("SECRET_SCRAPER_PASSWORD");
 
-			if(scraper.IsDefined())
-				api.promote(
-					scraper["user"].as<std::string>(),
-					scraper["password"].as<std::string>()
-				);
-			else
-				std::cerr << "Config stanza '" << name << "' does not exist, assuming debug" << std::endl;
+		if(secret_scraper_username != NULL)
+		{
+			api.promote(
+				std::string(secret_scraper_username),
+				std::string(secret_scraper_password)
+			);
 		}
 		else
-			std::cerr << "Config file " << opt.config << " does not exist, assuming debug" << std::endl;
+			std::cerr << "SECRET_SCRAPER_{USERNAME, PASSWORD} not set, assuming debug" << std::endl;
 
 		size_t images_downloaded = 0;
 		std::set<std::string> identifiers;
